@@ -195,7 +195,7 @@ PathfindingExample.WorldState.prototype.update = function () {
         if (!this.reachedXY(next_position)) {
             var moveX = (next_position.x * 32) + 16;
             var moveY = (next_position.y * 32) + 16;
-            this.game.physics.arcade.moveToXY(this.sprite, moveX, moveY);
+            this.game.physics.arcade.moveToXY(this.sprite, moveX, moveY, 300);
         } else {
             this.sprite.body.velocity.x = 0;
             this.sprite.body.velocity.y = 0;
@@ -224,7 +224,8 @@ PathfindingExample.WorldState.prototype.moveCarAlongXY = function() {
 
 PathfindingExample.WorldState.prototype.reachedXY = function(position){
     "use strict";
-    if (this.game.physics.arcade.distanceToXY(this.sprite, (position.x * 32)+16, (position.y * 32)+16) <= 2) {
+    console.log(this.game.physics.arcade.distanceToXY(this.sprite, (position.x * 32)+16, (position.y * 32)+16));
+    if (this.game.physics.arcade.distanceToXY(this.sprite, (position.x * 32)+16, (position.y * 32)+16) <= 5) {
         return true;
     } else {
         return false;
