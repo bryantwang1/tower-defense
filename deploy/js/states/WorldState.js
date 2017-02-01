@@ -34,6 +34,7 @@ TowerDefense.WorldState.prototype.init = function () {
     this.car_path_step = -1;
     this.car_x;
     this.car_y;
+    this.carLastOrientation = 0;
 
     // load assets
     // this.game.load.image('ground_1x1', '../assets/tilemaps/tiles/ground_1x1.png');
@@ -285,6 +286,7 @@ TowerDefense.WorldState.prototype.findPathTo = function(originx, originy, tilex,
 TowerDefense.WorldState.prototype.update = function () {
     //car variables
     var next_position;
+    this.counter++;
 
     this.game.physics.arcade.collide(this.sprite, this.layer2);
 
@@ -313,18 +315,25 @@ TowerDefense.WorldState.prototype.update = function () {
         this.sprite.body.velocity.x = 0;
         this.sprite.body.velocity.y = 0;
     }
-    console.log(this.sprite.body.velocity.x);
-
-    if(this.sprite.body.velocity.x > 10) {
+    if(this.counter % 3 === 0) {
+      console.log(this.sprite.body.velocity.x);
+      if(this.sprite.body.velocity.x === 0 && this.sprite.body.velocity.y === 0) {
+        this.sprite.rotation = this.carLastOrientation;
+      } else if(this.sprite.body.velocity.x > 20) {
         this.sprite.rotation = 0;
-    } else if(this.sprite.body.velocity.y > 10) {
-        this.sprite.rotation = 1.6;
-    } else if(this.sprite.body.velocity.x < -10) {
-        this.sprite.rotation = 3.2;
-    } else if(this.sprite.body.velocity.y < -10) {
-        this.sprite.rotation = 4.8;
-    } else {
+        this.carLastOrientation = 0;
+      } else if(this.sprite.body.velocity.y > 20) {
+        this.sprite.rotation = 1.57;
+        this.carLastOrientation = 1.57;
+      } else if(this.sprite.body.velocity.x < -20) {
+        this.sprite.rotation = 3.14;
+        this.carLastOrientation = 3.14;
+      } else if(this.sprite.body.velocity.y < -20) {
+        this.sprite.rotation = 4.71;
+        this.carLastOrientation = 4.71;
+      } else {
         this.sprite.rotation = 0;
+      }
     }
 }
 
