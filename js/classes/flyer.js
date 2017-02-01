@@ -1,18 +1,7 @@
 var TowerDefense = TowerDefense || {};
 
 TowerDefense.Flyer = function (parentState, posX, posY, sprite) {
-    Phaser.Sprite.call(this, game, posX, posY, sprite);
-    this.outOfBoundsKill = true;
-    this.collisionEnabled = false;
-    this.game.physics.arcade.enable(this, true);
-    this.anchor.setTo(0.5, 0.5);
-    this.body.setSize(16, 16);
-
-    this.type = sprite;
-    this.path = [];
-    this.pathStep = -1;
-    this.counter = 0;
-    this.lastRotation = 0;
+    TowerDefense.Enemy.call(this, game, posX, posY, sprite);
 }
 
 TowerDefense.Flyer.prototype = Object.create(TowerDefense.Enemy.prototype);

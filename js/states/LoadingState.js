@@ -18,6 +18,11 @@ TowerDefense.LoadingState.prototype.preload = function () {
     this.game.load.image('ground_1x1', '../assets/tilemaps/tiles/ground_1x1.png');
     this.game.load.image('car', '../assets/car90.png');
     this.game.load.image('star', '../assets/star.png');
+    this.game.load.image('bullet', '../assets/bullet.png');
+    this.game.load.image('arrow', '../assets/cannon.png');
+    this.game.load.image('runner', '../assets/runnerBasic.png');
+    this.game.load.image('runnerTank', '../assets/runnerTank.png');
+    this.game.load.spritesheet('explosion', '../assets/ex1.png', 50, 50);
 };
 
 TowerDefense.LoadingState.prototype.create = function () {
