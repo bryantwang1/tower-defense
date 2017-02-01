@@ -1,23 +1,23 @@
-var PathfindingExample = PathfindingExample || {};
+var TowerDefense = TowerDefense || {};
 
-PathfindingExample.BootState = function () {
+TowerDefense.BootState = function () {
     "use strict";
     Phaser.State.call(this);
 };
 
-PathfindingExample.BootState.prototype = Object.create(Phaser.State.prototype);
-PathfindingExample.BootState.prototype.constructor = PathfindingExample.BootState;
+TowerDefense.BootState.prototype = Object.create(Phaser.State.prototype);
+TowerDefense.BootState.prototype.constructor = TowerDefense.BootState;
 
-PathfindingExample.BootState.prototype.init = function (next_state) {
+TowerDefense.BootState.prototype.init = function (next_state) {
     "use strict";
     this.next_state = next_state;
 };
 
-PathfindingExample.BootState.prototype.preload = function () {
+TowerDefense.BootState.prototype.preload = function () {
     "use strict";
 };
 
-PathfindingExample.BootState.prototype.create = function () {
+TowerDefense.BootState.prototype.create = function () {
     "use strict";
     this.game.state.start("LoadingState", true, false, this.next_state);
 };
