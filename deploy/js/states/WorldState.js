@@ -29,11 +29,13 @@ TowerDefense.WorldState.prototype.init = function () {
 
     this.cursors;
     this.blocked = false;
-    this.enemy_path = [];
+    this.monsters;
+    // to hold monsters members so we can check them
+    this.monsterArrays = [];
     this.car_path = [];
     this.car_path_step = -1;
-    this.car_x;
-    this.car_y;
+    this.startX;
+    this.startY;
     this.carLastOrientation = 0;
 
     // load assets
@@ -167,28 +169,17 @@ TowerDefense.WorldState.prototype.create = function () {
     this.pathfinder.setGrid(this.map.layers[1].data, walkables);
 
     // add sprites
-    this.sprite = game.add.sprite(50, 50, 'car');
-    this.sprite.anchor.setTo(0.5, 0.5);
-    this.game.physics.enable(this.sprite);
-    this.sprite.body.setSize(16, 16);
-
-    this.sprite1 = game.add.sprite(50, 100, 'car');
-    this.sprite1.anchor.setTo(0.5, 0.5);
-    this.game.physics.enable(this.sprite1);
-    this.sprite1.body.setSize(16, 16);
-
-    this.sprite2 = game.add.sprite(50, 150, 'car');
-    this.sprite2.anchor.setTo(0.5, 0.5);
-    this.game.physics.enable(this.sprite2);
-    this.sprite2.body.setSize(16, 16);
-
-    this.sprite3 = game.add.sprite(50, 200, 'car');
-    this.sprite3.anchor.setTo(0.5, 0.5);
-    this.game.physics.enable(this.sprite3);
-    this.sprite3.body.setSize(16, 16);
-
-    this.game.camera.follow(this.sprite);
-
+    this.monsters = this.game.add.group();
+    var _this = this;
+    this.game.time.events.loop(250, function(){
+      var newEnemy = new TowerDefense.Enemy(TowerDefense, 48, 48, 'car');
+      _this.monsters.add(newEnemy);
+      _this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
+    });
+    // var newEnemy = new TowerDefense.Enemy(TowerDefense, 48, 48, 'car');
+    // this.monsters.add(newEnemy);
+    // var _this = this;
+    // this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
     // create groups
     this.groups = {};
     this.prefabs = {};
@@ -205,16 +196,16 @@ TowerDefense.WorldState.prototype.keyPress = function(key) {
     switch (key.keyCode)
     {
         case Phaser.Keyboard.T:
+        //find path
             this.marker.x = this.layer2.getTileX(this.game.input.activePointer.worldX) * 32;
             this.marker.y = this.layer2.getTileY(this.game.input.activePointer.worldY) * 32;
 
-
-            this.car_x = (this.layer2.getTileX(this.sprite.x) * 32);
-            this.car_y = (this.layer2.getTileY(this.sprite.y) * 32);
+            this.startX = (this.layer2.getTileX(48) * 32);
+            this.startY = (this.layer2.getTileY(48) * 32);
             this.blocked = true;
-            this.findPathTo(this.layer2.getTileX(this.car_x), this.layer2.getTileY(this.car_y), this.layer2.getTileX(this.marker.x), this.layer2.getTileY(this.marker.y));
+            this.findPathTo(this.layer2.getTileX(this.startX), this.layer2.getTileY(this.startY), this.layer2.getTileX(this.marker.x), this.layer2.getTileY(this.marker.y));
 
-            this.moveCarAlongXY();
+            // this.moveCarAlongXY();
             break;
     }
 }
@@ -247,7 +238,6 @@ TowerDefense.WorldState.prototype.createTileSelector = function() {
 TowerDefense.WorldState.prototype.pickTile = function(sprite, pointer) {
 
     this.currentTile = this.game.math.snapToFloor(pointer.x, 32) / 32;
-    console.log(this.currentTile);
 }
 
 TowerDefense.WorldState.prototype.updateMarker = function() {
@@ -263,7 +253,6 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
         var xPlace = this.currentLayer.getTileX(this.marker.x);
         var yPlace = this.currentLayer.getTileY(this.marker.y)
 
-        console.log("this.map.putTile(4, " + xPlace + ", " + yPlace + ", this.layer2);");
         // map.fill(currentTile, currentLayer.getTileX(marker.x), currentLayer.getTileY(marker.y), 4, 4, currentLayer);
     }
 }
@@ -272,10 +261,11 @@ TowerDefense.WorldState.prototype.findPathTo = function(originx, originy, tilex,
     var _this = this;
     this.pathfinder.setCallbackFunction(function(path) {
         path = path || [];
-        // for(var i = 0, ilen = path.length; i < ilen; i++) {
-        //     _this.map.putTile(10, path[i].x, path[i].y, _this.layer1);
-        // }
+        for(var i = 0, ilen = path.length; i < ilen; i++) {
+            _this.map.putTile(10, path[i].x, path[i].y, _this.layer1);
+        }
         _this.car_path = path;
+        _this.monsters.setAll('path', _this.car_path);
         _this.blocked = false;
     });
 
@@ -284,108 +274,122 @@ TowerDefense.WorldState.prototype.findPathTo = function(originx, originy, tilex,
 }
 
 TowerDefense.WorldState.prototype.update = function () {
-    //car variables
-    var next_position;
-    this.counter++;
 
-    this.game.physics.arcade.collide(this.sprite, this.layer2);
-
-    //car movement trigger
-    if (this.car_path.length > 0) {
-        next_position = this.car_path[this.car_path_step];
-
-        if (!this.reachedXY(next_position)) {
-            var moveX = (next_position.x * 32) + 16;
-            var moveY = (next_position.y * 32) + 16;
-            this.game.physics.arcade.moveToXY(this.sprite, moveX, moveY, 100);
-        } else {
-            this.sprite.body.velocity.x = 0;
-            this.sprite.body.velocity.y = 0;
-            this.sprite.x = (next_position.x * 32) + 16;
-            this.sprite.y = (next_position.y * 32) + 16;
-
-            if (this.car_path_step < this.car_path.length - 1) {
-                this.car_path_step += 1;
-            } else {
-                this.car_path = [];
-                this.car_path_step = -1;
-            }
-        }
-    } else {
-        this.sprite.body.velocity.x = 0;
-        this.sprite.body.velocity.y = 0;
-    }
-    if(this.counter % 3 === 0) {
-      console.log(this.sprite.body.velocity.x);
-      if(this.sprite.body.velocity.x === 0 && this.sprite.body.velocity.y === 0) {
-        this.sprite.rotation = this.carLastOrientation;
-      } else if(this.sprite.body.velocity.x > 20) {
-        this.sprite.rotation = 0;
-        this.carLastOrientation = 0;
-      } else if(this.sprite.body.velocity.y > 20) {
-        this.sprite.rotation = 1.57;
-        this.carLastOrientation = 1.57;
-      } else if(this.sprite.body.velocity.x < -20) {
-        this.sprite.rotation = 3.14;
-        this.carLastOrientation = 3.14;
-      } else if(this.sprite.body.velocity.y < -20) {
-        this.sprite.rotation = 4.71;
-        this.carLastOrientation = 4.71;
-      } else {
-        this.sprite.rotation = 0;
-      }
-    }
 }
 
-TowerDefense.WorldState.prototype.moveCarAlongXY = function() {
-    "use strict";
-    if (this.car_path !== null) {
-        this.car_path_step = 1;
 
-    } else {
-        this.car_path = [];
-    }
-};
 
-TowerDefense.WorldState.prototype.reachedXY = function(position){
-    "use strict";
-    if (this.game.physics.arcade.distanceToXY(this.sprite, (position.x * 32)+16, (position.y * 32)+16) <= 3) {
-        return true;
-    } else {
-        return false;
-    }
-};
+// ENEMY STUFF from -- http://blog.intracto.com/create-fun-and-interactive-games-with-javascript-using-phaser.io
 
-//ENEMY STUFF from -- http://blog.intracto.com/create-fun-and-interactive-games-with-javascript-using-phaser.io
-
-// var enemyGroup;
+// this.monsters;
 // function create() {
 //     …
 //
 //     // Enemies
-//     enemyGroup = game.add.group();
+//     this.monsters = game.add.group();
 //     game.time.events.loop(250, function(){
 //         var enemy = new Enemy(game.world.randomX, game.world.randomY, 'enemy');
 //         enemyGroup.add(enemy);
 //     });
 // }
-//
+
 // function update() {
 //     …
 //
 //     // Collision detection
 //     game.physics.arcade.overlap(character, enemyGroup, collisionHandler, null, this);
 // }
+// this.sprite = game.add.sprite(50, 50, 'car'); // standard car sprite
+TowerDefense.Enemy = function (parentState, posX, posY, sprite) {
+    Phaser.Sprite.call(this, game, posX, posY, sprite);
+    this.outOfBoundsKill = true;
+    this.collisionEnabled = false;
+    this.game.physics.arcade.enable(this, true);
+    this.anchor.setTo(0.5, 0.5);
+    this.body.setSize(16, 16);
+
+    this.path = [];
+    this.pathStep = -1;
+    this.counter = 0;
+    this.lastRotation = 0;
+}
+
+TowerDefense.Enemy.prototype = Object.create(Phaser.Sprite.prototype);
+TowerDefense.Enemy.prototype.constructor = TowerDefense.Enemy;
+
+// TowerDefense.Enemy.prototype.create = function () {
 //
-// Enemy = function (posX, posY, sprite) {
-//     Phaser.Sprite.call(this, game, posX, posY, sprite);
-//     this.outOfBoundsKill = true;
-//     this.collisionEnabled = false;
-//     game.physics.arcade.enable(this, true);
 // }
-//
-// Enemy.prototype = Object.create(Phaser.Sprite.prototype);
-// Enemy.prototype.constructor = Enemy;
-// Enemy.prototype.update = function () {
-//    // do update stuff for our enemy
-// }
+
+TowerDefense.Enemy.prototype.update = function () {
+  //car variables
+  var next_position;
+  this.counter++;
+
+  this.game.physics.arcade.collide(this, TowerDefense.layer2);
+
+  //car movement trigger
+  if (this.path.length > 0) {
+      if(this.pathStep < 0)
+      this.pathStep = 1;
+      next_position = this.path[this.pathStep];
+
+      if (!this.reachedXY(next_position)) {
+          var moveX = (next_position.x * 32) + 16;
+          var moveY = (next_position.y * 32) + 16;
+          this.game.physics.arcade.moveToXY(this, moveX, moveY, 100);
+      } else {
+          this.body.velocity.x = 0;
+          this.body.velocity.y = 0;
+          this.x = (next_position.x * 32) + 16;
+          this.y = (next_position.y * 32) + 16;
+
+          if (this.pathStep < this.path.length - 1) {
+              this.pathStep += 1;
+          } else {
+              this.path = [];
+              this.pathStep = -1;
+          }
+      }
+  } else {
+      this.body.velocity.x = 0;
+      this.body.velocity.y = 0;
+  }
+  if(this.counter % 3 === 0) {
+    if(this.body.velocity.x === 0 && this.body.velocity.y === 0) {
+      this.rotation = this.lastRotation;
+    } else if(this.body.velocity.x > 20) {
+      this.rotation = 0;
+      this.lastRotation = 0;
+    } else if(this.body.velocity.y > 20) {
+      this.rotation = 1.57;
+      this.lastRotation = 1.57;
+    } else if(this.body.velocity.x < -20) {
+      this.rotation = 3.14;
+      this.lastRotation = 3.14;
+    } else if(this.body.velocity.y < -20) {
+      this.rotation = 4.71;
+      this.lastRotation = 4.71;
+    } else {
+      this.rotation = 0;
+    }
+  }
+}
+
+TowerDefense.Enemy.prototype.moveAlongXY = function() {
+    "use strict";
+    if (this.path !== null) {
+        this.pathStep = 1;
+    } else {
+        this.path = [];
+    }
+};
+
+TowerDefense.Enemy.prototype.reachedXY = function(position){
+    "use strict";
+    if (this.game.physics.arcade.distanceToXY(this, (position.x * 32)+16, (position.y * 32)+16) <= 3) {
+        return true;
+    } else {
+        return false;
+    }
+};
