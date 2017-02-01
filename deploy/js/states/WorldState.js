@@ -204,9 +204,11 @@ TowerDefense.WorldState.prototype.create = function () {
 
     //  make towers
     this.towers = this.game.add.group()
-    for(var i=0; i < 5; i++) {
-        var newTower = new TowerDefense.Tower(this, 100, 100 + i * 100, 'arrow', 110, 1000, 5, 600, 'star');
+    for(var i=0; i < 2; i++) {
+        var newTower = new TowerDefense.Tower(this, 100, 100 + i * 110, 'machine-tower', 110, 1000, 5, 600, 'bullet');
+        var RocketTower = new TowerDefense.Tower(this, 400, 100 + i * 110, 'rocket-tower', 200, 800, 5, 200, 'rocket');
         this.towers.add(newTower);
+        this.towers.add(RocketTower);
     }
 
     // add input and keybindings
@@ -303,7 +305,7 @@ TowerDefense.WorldState.prototype.update = function () {
     // this.game.time.events.loop(1000, function()
     if(this.counter > 0 && this.counter < 200){
         if(spawnIntervalCheck) {
-            var newEnemy = new TowerDefense.Enemy(_this, 48, 48, 'car');
+            var newEnemy = new TowerDefense.Enemy(_this, 48, 48, 'runnerBasic');
             newEnemy.setPath(_this.car_path);
             _this.monsters.add(newEnemy);
             _this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
@@ -312,7 +314,7 @@ TowerDefense.WorldState.prototype.update = function () {
   // );
     if(this.counter > 300 && this.counter < 500){
         if(spawnIntervalCheck) {
-            var newEnemy = new TowerDefense.Enemy(_this, 48, 48, 'car');
+            var newEnemy = new TowerDefense.Enemy(_this, 48, 48, 'runnerTank');
             newEnemy.setPath(_this.car_path);
             _this.monsters.add(newEnemy);
             _this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
