@@ -349,7 +349,7 @@ TowerDefense.WorldState.prototype.moveCarAlongXY = function() {
 
 TowerDefense.WorldState.prototype.reachedXY = function(position){
     "use strict";
-    if (this.game.physics.arcade.distanceToXY(this.sprite, (position.x * 32)+16, (position.y * 32)+16) <= 5) {
+    if (this.game.physics.arcade.distanceToXY(this.sprite, (position.x * 32)+16, (position.y * 32)+16) <= 3) {
         return true;
     } else {
         return false;
