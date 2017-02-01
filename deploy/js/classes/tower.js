@@ -1,6 +1,6 @@
 var TowerDefense = TowerDefense || {};
 
-TowerDefense.Tower = function (parentState, posX, posY, sprite, range, fireRate, damage, bulletSpeed) {
+TowerDefense.Tower = function (parentState, posX, posY, sprite, range, fireRate, damage, bulletSpeed, bulletSprite) {
     Phaser.Sprite.call(this, game, posX, posY, sprite);
     this.collisionEnabled = false;
     this.game.physics.arcade.enable(this, true);
@@ -17,10 +17,12 @@ TowerDefense.Tower = function (parentState, posX, posY, sprite, range, fireRate,
     this.bulletSpeed = bulletSpeed; // pixels/second
     this.damageDealt = damage;
     this.explosionGroup = this.game.add.group();
+    this.bulletLifespan = range/(bulletSpeed/1000);
 
     this.bulletPool = this.game.add.group();
     for(var i = 0; i < this.NUMBER_OF_BULLETS; i++) {
-      var bullet = this.game.add.sprite(0, 0, 'bullet');
+      var bullet = this.game.add.sprite(0, 0, bulletSprite);
+      bullet.lifespan = this.bulletLifespan;
       this.bulletPool.add(bullet);
       // Set its pivot point to the center of the bullet origin
       bullet.anchor.setTo(0.5, 0.5);
@@ -52,6 +54,7 @@ TowerDefense.Tower.prototype.shootBullet = function() {
     if (bullet === null || bullet === undefined) return;
     // This makes the bullet "alive"
     bullet.revive();
+    bullet.lifespan = this.bulletLifespan;
     // Bullets should kill themselves when they leave the world.
     // Phaser takes care of this for me by setting this flag
     // but you can do it yourself by killing the bullet if
@@ -101,7 +104,7 @@ TowerDefense.Tower.prototype.update = function() {
             tower.shootBullet();
         }
     });
-
+    console.log(this.withinRadius.length);
     if(this.withinRadius.length > 0) {
       var distanceCurrent = this.game.physics.arcade.distanceBetween(this, this.withinRadius[0]);
       if(distanceCurrent > this.targetRadius) {
