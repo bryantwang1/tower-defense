@@ -32,6 +32,7 @@ TowerDefense.WorldState.prototype.init = function () {
     this.monsters;
     // to hold monsters members so we can check them
     this.monsterArrays = [];
+    this.fliers;
     this.car_path = [];
     this.car_path_step = -1;
     this.startX;
@@ -165,7 +166,6 @@ TowerDefense.WorldState.prototype.create = function () {
     // set ending points for path
     this.endX = this.layer2.getTileX(48 + 704) * 32;
     this.endY = this.layer2.getTileY(48 + 544) * 32;
-    console.log("tile.x: " + this.layer2.getTileX(this.endX) + ", tile.y: " + this.layer2.getTileY(this.endY));
 
     //  Create our tile selector at the top of the screen
     this.createTileSelector();
@@ -186,6 +186,16 @@ TowerDefense.WorldState.prototype.create = function () {
       newEnemy.setPath(_this.car_path);
       _this.monsters.add(newEnemy);
       _this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
+    });
+
+    this.fliers = this.game.add.group()
+    // _this = this;
+    this.game.time.events.loop(1000, function(){
+      var randomStartY = (Math.floor(Math.random() * 300)) + 200;
+      var newFlyer = new TowerDefense.Enemy(TowerDefense, 48, randomStartY, 'star');
+      newFlyer.randomEndY = (Math.floor(Math.random() * 300)) + 200;
+
+      _this.fliers.add(newFlyer);
     });
     // var newEnemy = new TowerDefense.Enemy(TowerDefense, 48, 48, 'car');
     // this.monsters.add(newEnemy);
@@ -261,14 +271,12 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
         var xPlace = this.currentLayer.getTileX(this.marker.x);
         var yPlace = this.currentLayer.getTileY(this.marker.y)
 
-        console.log(xPlace + ", " + yPlace);
         // map.fill(currentTile, currentLayer.getTileX(marker.x), currentLayer.getTileY(marker.y), 4, 4, currentLayer);
     }
 }
 
 TowerDefense.WorldState.prototype.findPathTo = function(originx, originy, tilex, tiley) {
     var _this = this;
-    console.log("find path");
     this.pathfinder.setCallbackFunction(function(path) {
         path = path || [];
         for(var i = 0, ilen = path.length; i < ilen; i++) {
@@ -318,6 +326,7 @@ TowerDefense.Enemy = function (parentState, posX, posY, sprite) {
     this.anchor.setTo(0.5, 0.5);
     this.body.setSize(16, 16);
 
+    this.type = sprite;
     this.path = [];
     this.pathStep = -1;
     this.counter = 0;
@@ -332,39 +341,45 @@ TowerDefense.Enemy.prototype.constructor = TowerDefense.Enemy;
 // }
 
 TowerDefense.Enemy.prototype.update = function () {
-  //car variables
-  var next_position;
-  this.counter++;
+  if(this.type === "star") {
+    this.game.physics.arcade.moveToXY(this, 752, this.randomEndY, 100);
+  } else {
+    //car variables
+    var next_position;
+    this.counter++;
 
-  this.game.physics.arcade.collide(this, TowerDefense.layer2);
+    this.game.physics.arcade.collide(this, TowerDefense.layer2);
 
-  //car movement trigger
-  if (this.path.length > 0) {
+    //car movement trigger
+    if (this.path.length > 0) {
       if(this.pathStep < 0)
       this.pathStep = 1;
       next_position = this.path[this.pathStep];
 
       if (!this.reachedXY(next_position)) {
-          var moveX = (next_position.x * 32) + 16;
-          var moveY = (next_position.y * 32) + 16;
-          this.game.physics.arcade.moveToXY(this, moveX, moveY, 100);
+        var moveX = (next_position.x * 32) + 16;
+        var moveY = (next_position.y * 32) + 16;
+        this.game.physics.arcade.moveToXY(this, moveX, moveY, 100);
       } else {
-          this.body.velocity.x = 0;
-          this.body.velocity.y = 0;
-          this.x = (next_position.x * 32) + 16;
-          this.y = (next_position.y * 32) + 16;
+        this.body.velocity.x = 0;
+        this.body.velocity.y = 0;
+        this.x = (next_position.x * 32) + 16;
+        this.y = (next_position.y * 32) + 16;
 
-          if (this.pathStep < this.path.length - 1) {
-              this.pathStep += 1;
-          } else {
-              this.path = [];
-              this.pathStep = -1;
-          }
+        if (this.pathStep < this.path.length - 1) {
+          this.pathStep += 1;
+        } else {
+          this.path = [];
+          this.pathStep = -1;
+        }
       }
-  } else {
+    } else {
       this.body.velocity.x = 0;
       this.body.velocity.y = 0;
+    }
+
   }
+
   if(this.counter % 3 === 0) {
     if(this.body.velocity.x === 0 && this.body.velocity.y === 0) {
       this.rotation = this.lastRotation;
@@ -406,5 +421,4 @@ TowerDefense.Enemy.prototype.reachedXY = function(position){
 
 TowerDefense.Enemy.prototype.setPath = function(path) {
   this.path = path;
-  console.log("set path: " + this.path.length);
 }

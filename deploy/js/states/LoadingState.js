@@ -17,6 +17,7 @@ TowerDefense.LoadingState.prototype.preload = function () {
     "use strict";
     this.game.load.image('ground_1x1', '../assets/tilemaps/tiles/ground_1x1.png');
     this.game.load.image('car', '../assets/car90.png');
+    this.game.load.image('star', '../assets/star.png');
 };
 
 TowerDefense.LoadingState.prototype.create = function () {
