@@ -26,9 +26,12 @@ TowerDefense.Enemy = function (parentState, posX, posY, sprite) {
     this.collisionEnabled = false;
     this.game.physics.arcade.enable(this, true);
     this.anchor.setTo(0.5, 0.5);
-    this.body.setSize(16, 16);
+    this.body.setSize(32, 32);
+    this.maxHealth = 15;
 
-    this.type = sprite;
+    this.moveSpeed = 120;
+    this.body.immovable = true;
+
     this.path = [];
     this.pathStep = -1;
     this.counter = 0;
@@ -44,7 +47,7 @@ TowerDefense.Enemy.prototype.constructor = TowerDefense.Enemy;
 
 TowerDefense.Enemy.prototype.update = function () {
   if(this.type === "star") {
-    this.game.physics.arcade.moveToXY(this, 752, this.randomEndY, 100);
+    this.game.physics.arcade.moveToXY(this, 752, this.randomEndY, this.moveSpeed);
   } else {
     //car variables
     var next_position;
@@ -62,7 +65,7 @@ TowerDefense.Enemy.prototype.update = function () {
       if (!this.reachedXY(next_position)) {
         var moveX = (next_position.x * 32) + 16;
         var moveY = (next_position.y * 32) + 16;
-        this.game.physics.arcade.moveToXY(this, moveX, moveY, 100);
+        this.game.physics.arcade.moveToXY(this, moveX, moveY, this.moveSpeed);
       } else {
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;

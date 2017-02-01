@@ -38,6 +38,7 @@ TowerDefense.WorldState.prototype.init = function () {
     this.startX;
     this.startY;
     this.carLastOrientation = 0;
+    this.towers;
 
     // load assets
     // this.game.load.image('ground_1x1', '../assets/tilemaps/tiles/ground_1x1.png');
@@ -181,18 +182,14 @@ TowerDefense.WorldState.prototype.create = function () {
     // add sprites
     this.monsters = this.game.add.group();
     var _this = this;
-    this.game.time.events.loop(200, function(){
-      var newEnemy = new TowerDefense.Enemy(TowerDefense, 48, 48, 'car');
-      newEnemy.setPath(_this.car_path);
-      _this.monsters.add(newEnemy);
-      _this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
-    });
+
+
 
     this.fliers = this.game.add.group()
     // _this = this;
     this.game.time.events.loop(1000, function(){
       var randomStartY = (Math.floor(Math.random() * 300)) + 200;
-      var newFlyer = new TowerDefense.Flyer(TowerDefense, 48, randomStartY, 'star');
+      var newFlyer = new TowerDefense.Flyer(_this, 48, randomStartY, 'star');
       newFlyer.randomEndY = (Math.floor(Math.random() * 300)) + 200;
 
       _this.fliers.add(newFlyer);
@@ -204,6 +201,13 @@ TowerDefense.WorldState.prototype.create = function () {
     // create groups
     this.groups = {};
     this.prefabs = {};
+
+    //  make towers
+    this.towers = this.game.add.group()
+    for(var i=0; i < 5; i++) {
+        var newTower = new TowerDefense.Tower(this, 100, 100 + i * 100, 'arrow', 110, 1000, 5, 600);
+        this.towers.add(newTower);
+    }
 
     // add input and keybindings
     this.cursors = game.input.keyboard.createCursorKeys();
@@ -292,7 +296,28 @@ TowerDefense.WorldState.prototype.findPathTo = function(originx, originy, tilex,
 }
 
 TowerDefense.WorldState.prototype.update = function () {
-
+    this.counter++;
+    // seems to run ~60 tickets per second
+    var _this = this;
+    var spawnIntervalCheck = this.counter % 15 === 0;
+    // this.game.time.events.loop(1000, function()
+    if(this.counter > 0 && this.counter < 200){
+        if(spawnIntervalCheck) {
+            var newEnemy = new TowerDefense.Enemy(_this, 48, 48, 'car');
+            newEnemy.setPath(_this.car_path);
+            _this.monsters.add(newEnemy);
+            _this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
+        }
+    }
+  // );
+    if(this.counter > 300 && this.counter < 500){
+        if(spawnIntervalCheck) {
+            var newEnemy = new TowerDefense.Enemy(_this, 48, 48, 'car');
+            newEnemy.setPath(_this.car_path);
+            _this.monsters.add(newEnemy);
+            _this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
+        }
+    }
 }
 
 
