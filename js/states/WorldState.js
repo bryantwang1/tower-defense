@@ -205,10 +205,14 @@ TowerDefense.WorldState.prototype.create = function () {
     //  make towers
     this.towers = this.game.add.group()
     for(var i=0; i < 2; i++) {
-        var newTower = new TowerDefense.Tower(this, 100, 100 + i * 110, 'machine-tower', 110, 1000, 5, 600, 'bullet');
-        var RocketTower = new TowerDefense.Tower(this, 400, 100 + i * 110, 'rocket-tower', 200, 800, 5, 200, 'rocket');
+        var newTower = new TowerDefense.Tower(this, 100, 100 + i * 110, 'machine-tower', 110, 1000, 3, 600, 'bullet');
+        var rocketTower = new TowerDefense.Tower(this, 500, 100 + i * 110, 'rocket-tower', 200, 800, 3, 200, 'rocket');
+        var freezeTower = new TowerDefense.Tower(this, 100, 400 + i * 110, 'freeze-tower', 150, 800, 0, 300, 'freeze');
+        var teslaTower = new TowerDefense.Tower(this, 500, 400 + i * 110, 'tesla-tower', 110, 800, 10, 200, 'diamond');
         this.towers.add(newTower);
-        this.towers.add(RocketTower);
+        this.towers.add(rocketTower);
+        this.towers.add(freezeTower);
+        this.towers.add(teslaTower);
     }
 
     // add input and keybindings
