@@ -1,18 +1,18 @@
-var PathfindingExample = PathfindingExample || {};
+var TowerDefense = TowerDefense || {};
 
-PathfindingExample.WorldState = function () {
+TowerDefense.WorldState = function () {
     "use strict";
     Phaser.State.call(this);
 
     // this.prefab_classes = {
-    //     "player": PathfindingExample.Player.prototype.constructor
+    //     "player": TowerDefense.Player.prototype.constructor
     // };
 };
 
-PathfindingExample.WorldState.prototype = Object.create(Phaser.State.prototype);
-PathfindingExample.WorldState.prototype.constructor = PathfindingExample.WorldState;
+TowerDefense.WorldState.prototype = Object.create(Phaser.State.prototype);
+TowerDefense.WorldState.prototype.constructor = TowerDefense.WorldState;
 
-PathfindingExample.WorldState.prototype.init = function () {
+TowerDefense.WorldState.prototype.init = function () {
     "use strict";
     // list properties we'll need
     this.map;
@@ -29,6 +29,7 @@ PathfindingExample.WorldState.prototype.init = function () {
 
     this.cursors;
     this.blocked = false;
+    this.enemy_path = [];
     this.car_path = [];
     this.car_path_step = -1;
     this.car_x;
@@ -56,7 +57,7 @@ PathfindingExample.WorldState.prototype.init = function () {
     this.obstacleTile = 4;
 };
 
-PathfindingExample.WorldState.prototype.create = function () {
+TowerDefense.WorldState.prototype.create = function () {
     "use strict";
     //  Creates a new blank layer and sets the map dimensions.
     this.layer1 = this.map.create('level1', 25, 20, 32, 32);
@@ -71,7 +72,86 @@ PathfindingExample.WorldState.prototype.create = function () {
 
     // Create collision/obstacle layer
     this.layer2 = this.map.createBlankLayer('level2', 25, 20, 32, 32);
-    // insert maze
+    // create maze
+    for(var i = 0; i < 25;i++) {
+      for(var j = 0; j < 20;j++) {
+
+            //create boundaries
+            if(i === 0) {
+                this.map.putTile(4, i, j, this.layer2);
+            }
+            if(i === 24) {
+                this.map.putTile(4, i, j, this.layer2);
+            }
+            if(j === 0) {
+                this.map.putTile(4, i, j, this.layer2);
+            }
+            if(j === 19) {
+                this.map.putTile(4, i, j, this.layer2);
+            }
+            if(i === 3 && j !== 1) {
+                this.map.putTile(4, i, j, this.layer2);
+            }
+            if(i === 5 && j !== 18) {
+                this.map.putTile(4, i, j, this.layer2);
+            }
+            if(i === 7 && j !== 1) {
+                this.map.putTile(4, i, j, this.layer2);
+            }
+            if(i === 13 && j !== 18) {
+                this.map.putTile(4, i, j, this.layer2);
+            }
+
+        this.map.putTile(0, i, j, this.layer1);
+      }
+    }
+
+    this.map.putTile(4, 12, 17, this.layer2);
+    this.map.putTile(4, 11, 17, this.layer2);
+    this.map.putTile(4, 10, 17, this.layer2);
+    this.map.putTile(4, 9, 17, this.layer2);
+    this.map.putTile(4, 8, 15, this.layer2);
+    this.map.putTile(4, 9, 15, this.layer2);
+    this.map.putTile(4, 10, 15, this.layer2);
+    this.map.putTile(4, 10, 15, this.layer2);
+    this.map.putTile(4, 11, 15, this.layer2);
+    this.map.putTile(4, 11, 15, this.layer2);
+    this.map.putTile(4, 12, 13, this.layer2);
+    this.map.putTile(4, 11, 13, this.layer2);
+    this.map.putTile(4, 10, 13, this.layer2);
+    this.map.putTile(4, 10, 13, this.layer2);
+    this.map.putTile(4, 9, 13, this.layer2);
+    this.map.putTile(4, 8, 11, this.layer2);
+    this.map.putTile(4, 9, 11, this.layer2);
+    this.map.putTile(4, 10, 11, this.layer2);
+    this.map.putTile(4, 11, 11, this.layer2);
+    this.map.putTile(4, 12, 9, this.layer2);
+    this.map.putTile(4, 11, 9, this.layer2);
+    this.map.putTile(4, 11, 9, this.layer2);
+    this.map.putTile(4, 10, 9, this.layer2);
+    this.map.putTile(4, 9, 9, this.layer2);
+    this.map.putTile(4, 8, 2, this.layer2);
+    this.map.putTile(4, 9, 2, this.layer2);
+    this.map.putTile(4, 9, 2, this.layer2);
+    this.map.putTile(4, 10, 2, this.layer2);
+    this.map.putTile(4, 11, 2, this.layer2);
+    this.map.putTile(4, 9, 4, this.layer2);
+    this.map.putTile(4, 9, 4, this.layer2);
+    this.map.putTile(4, 10, 4, this.layer2);
+    this.map.putTile(4, 10, 4, this.layer2);
+    this.map.putTile(4, 11, 4, this.layer2);
+    this.map.putTile(4, 11, 4, this.layer2);
+    this.map.putTile(4, 12, 4, this.layer2);
+    this.map.putTile(4, 12, 4, this.layer2);
+    this.map.putTile(4, 8, 7, this.layer2);
+    this.map.putTile(4, 9, 7, this.layer2);
+    this.map.putTile(4, 9, 5, this.layer2);
+    this.map.putTile(4, 9, 5, this.layer2);
+    this.map.putTile(4, 10, 7, this.layer2);
+    this.map.putTile(4, 10, 7, this.layer2);
+    this.map.putTile(4, 11, 7, this.layer2);
+    this.map.putTile(4, 11, 7, this.layer2);
+    this.map.putTile(4, 11, 6, this.layer2);
 
     this.currentLayer = this.layer2;
     this.map.setCollision(this.obstacleTile);
@@ -82,14 +162,29 @@ PathfindingExample.WorldState.prototype.create = function () {
     this.game.input.addMoveCallback(this.updateMarker, this);
 
     // set grid for pathing
-    var walkables = [-1];
+    var walkables = [-1, 0];
     this.pathfinder.setGrid(this.map.layers[1].data, walkables);
 
-    // add sprite
+    // add sprites
     this.sprite = game.add.sprite(50, 50, 'car');
     this.sprite.anchor.setTo(0.5, 0.5);
     this.game.physics.enable(this.sprite);
-    this.sprite.body.setSize(32, 32);
+    this.sprite.body.setSize(16, 16);
+
+    this.sprite1 = game.add.sprite(50, 100, 'car');
+    this.sprite1.anchor.setTo(0.5, 0.5);
+    this.game.physics.enable(this.sprite1);
+    this.sprite1.body.setSize(16, 16);
+
+    this.sprite2 = game.add.sprite(50, 150, 'car');
+    this.sprite2.anchor.setTo(0.5, 0.5);
+    this.game.physics.enable(this.sprite2);
+    this.sprite2.body.setSize(16, 16);
+
+    this.sprite3 = game.add.sprite(50, 200, 'car');
+    this.sprite3.anchor.setTo(0.5, 0.5);
+    this.game.physics.enable(this.sprite3);
+    this.sprite3.body.setSize(16, 16);
 
     this.game.camera.follow(this.sprite);
 
@@ -104,7 +199,7 @@ PathfindingExample.WorldState.prototype.create = function () {
     this.moveCarXY.onDown.add(this.keyPress, this);
 };
 
-PathfindingExample.WorldState.prototype.keyPress = function(key) {
+TowerDefense.WorldState.prototype.keyPress = function(key) {
 
     switch (key.keyCode)
     {
@@ -123,7 +218,7 @@ PathfindingExample.WorldState.prototype.keyPress = function(key) {
     }
 }
 
-PathfindingExample.WorldState.prototype.createTileSelector = function() {
+TowerDefense.WorldState.prototype.createTileSelector = function() {
 
     //  Our tile selection window
     var tileSelector = this.game.add.group();
@@ -148,13 +243,13 @@ PathfindingExample.WorldState.prototype.createTileSelector = function() {
 
 }
 
-PathfindingExample.WorldState.prototype.pickTile = function(sprite, pointer) {
+TowerDefense.WorldState.prototype.pickTile = function(sprite, pointer) {
 
     this.currentTile = this.game.math.snapToFloor(pointer.x, 32) / 32;
     console.log(this.currentTile);
 }
 
-PathfindingExample.WorldState.prototype.updateMarker = function() {
+TowerDefense.WorldState.prototype.updateMarker = function() {
 
     this.marker.x = this.currentLayer.getTileX(this.game.input.activePointer.worldX) * 32;
     this.marker.y = this.currentLayer.getTileY(this.game.input.activePointer.worldY) * 32;
@@ -163,17 +258,22 @@ PathfindingExample.WorldState.prototype.updateMarker = function() {
     {
         this.map.putTile(this.currentTile, this.currentLayer.getTileX(this.marker.x), this.currentLayer.getTileY(this.marker.y), this.currentLayer);
         this.pathfinder.updateGrid(this.map.layers[1].data);
+
+        var xPlace = this.currentLayer.getTileX(this.marker.x);
+        var yPlace = this.currentLayer.getTileY(this.marker.y)
+
+        console.log("this.map.putTile(4, " + xPlace + ", " + yPlace + ", this.layer2);");
         // map.fill(currentTile, currentLayer.getTileX(marker.x), currentLayer.getTileY(marker.y), 4, 4, currentLayer);
     }
 }
 
-PathfindingExample.WorldState.prototype.findPathTo = function(originx, originy, tilex, tiley) {
+TowerDefense.WorldState.prototype.findPathTo = function(originx, originy, tilex, tiley) {
     var _this = this;
     this.pathfinder.setCallbackFunction(function(path) {
         path = path || [];
-        for(var i = 0, ilen = path.length; i < ilen; i++) {
-            _this.map.putTile(10, path[i].x, path[i].y, _this.layer1);
-        }
+        // for(var i = 0, ilen = path.length; i < ilen; i++) {
+        //     _this.map.putTile(10, path[i].x, path[i].y, _this.layer1);
+        // }
         _this.car_path = path;
         _this.blocked = false;
     });
@@ -182,7 +282,7 @@ PathfindingExample.WorldState.prototype.findPathTo = function(originx, originy, 
     this.pathfinder.calculatePath();
 }
 
-PathfindingExample.WorldState.prototype.update = function () {
+TowerDefense.WorldState.prototype.update = function () {
     //car variables
     var next_position;
 
@@ -195,7 +295,7 @@ PathfindingExample.WorldState.prototype.update = function () {
         if (!this.reachedXY(next_position)) {
             var moveX = (next_position.x * 32) + 16;
             var moveY = (next_position.y * 32) + 16;
-            this.game.physics.arcade.moveToXY(this.sprite, moveX, moveY, 300);
+            this.game.physics.arcade.moveToXY(this.sprite, moveX, moveY, 100);
         } else {
             this.sprite.body.velocity.x = 0;
             this.sprite.body.velocity.y = 0;
@@ -209,10 +309,26 @@ PathfindingExample.WorldState.prototype.update = function () {
                 this.car_path_step = -1;
             }
         }
+    } else {
+        this.sprite.body.velocity.x = 0;
+        this.sprite.body.velocity.y = 0;
+    }
+    console.log(this.sprite.body.velocity.x);
+
+    if(this.sprite.body.velocity.x > 10) {
+        this.sprite.rotation = 0;
+    } else if(this.sprite.body.velocity.y > 10) {
+        this.sprite.rotation = 1.6;
+    } else if(this.sprite.body.velocity.x < -10) {
+        this.sprite.rotation = 3.2;
+    } else if(this.sprite.body.velocity.y < -10) {
+        this.sprite.rotation = 4.8;
+    } else {
+        this.sprite.rotation = 0;
     }
 }
 
-PathfindingExample.WorldState.prototype.moveCarAlongXY = function() {
+TowerDefense.WorldState.prototype.moveCarAlongXY = function() {
     "use strict";
     if (this.car_path !== null) {
         this.car_path_step = 1;
@@ -222,12 +338,45 @@ PathfindingExample.WorldState.prototype.moveCarAlongXY = function() {
     }
 };
 
-PathfindingExample.WorldState.prototype.reachedXY = function(position){
+TowerDefense.WorldState.prototype.reachedXY = function(position){
     "use strict";
-    console.log(this.game.physics.arcade.distanceToXY(this.sprite, (position.x * 32)+16, (position.y * 32)+16));
     if (this.game.physics.arcade.distanceToXY(this.sprite, (position.x * 32)+16, (position.y * 32)+16) <= 5) {
         return true;
     } else {
         return false;
     }
 };
+
+//ENEMY STUFF from -- http://blog.intracto.com/create-fun-and-interactive-games-with-javascript-using-phaser.io
+
+// var enemyGroup;
+// function create() {
+//     …
+//
+//     // Enemies
+//     enemyGroup = game.add.group();
+//     game.time.events.loop(250, function(){
+//         var enemy = new Enemy(game.world.randomX, game.world.randomY, 'enemy');
+//         enemyGroup.add(enemy);
+//     });
+// }
+//
+// function update() {
+//     …
+//
+//     // Collision detection
+//     game.physics.arcade.overlap(character, enemyGroup, collisionHandler, null, this);
+// }
+//
+// Enemy = function (posX, posY, sprite) {
+//     Phaser.Sprite.call(this, game, posX, posY, sprite);
+//     this.outOfBoundsKill = true;
+//     this.collisionEnabled = false;
+//     game.physics.arcade.enable(this, true);
+// }
+//
+// Enemy.prototype = Object.create(Phaser.Sprite.prototype);
+// Enemy.prototype.constructor = Enemy;
+// Enemy.prototype.update = function () {
+//    // do update stuff for our enemy
+// }
