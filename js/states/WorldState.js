@@ -159,6 +159,14 @@ TowerDefense.WorldState.prototype.create = function () {
     this.currentLayer = this.layer2;
     this.map.setCollision(this.obstacleTile);
 
+    // set starting points for path
+    this.startX = this.layer2.getTileX(48) * 32;
+    this.startY = this.layer2.getTileY(48) * 32;
+    // set ending points for path
+    this.endX = this.layer2.getTileX(48 + 704) * 32;
+    this.endY = this.layer2.getTileY(48 + 544) * 32;
+    console.log("tile.x: " + this.layer2.getTileX(this.endX) + ", tile.y: " + this.layer2.getTileY(this.endY));
+
     //  Create our tile selector at the top of the screen
     this.createTileSelector();
 
@@ -168,11 +176,14 @@ TowerDefense.WorldState.prototype.create = function () {
     var walkables = [-1, 0];
     this.pathfinder.setGrid(this.map.layers[1].data, walkables);
 
+    // generate path
+    this.findPathTo(this.layer2.getTileX(this.startX), this.layer2.getTileY(this.startY), this.layer2.getTileX(this.endX), this.layer2.getTileY(this.endY));
     // add sprites
     this.monsters = this.game.add.group();
     var _this = this;
-    this.game.time.events.loop(250, function(){
+    this.game.time.events.loop(200, function(){
       var newEnemy = new TowerDefense.Enemy(TowerDefense, 48, 48, 'car');
+      newEnemy.setPath(_this.car_path);
       _this.monsters.add(newEnemy);
       _this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
     });
@@ -200,10 +211,7 @@ TowerDefense.WorldState.prototype.keyPress = function(key) {
             this.marker.x = this.layer2.getTileX(this.game.input.activePointer.worldX) * 32;
             this.marker.y = this.layer2.getTileY(this.game.input.activePointer.worldY) * 32;
 
-            this.startX = (this.layer2.getTileX(48) * 32);
-            this.startY = (this.layer2.getTileY(48) * 32);
             this.blocked = true;
-            this.findPathTo(this.layer2.getTileX(this.startX), this.layer2.getTileY(this.startY), this.layer2.getTileX(this.marker.x), this.layer2.getTileY(this.marker.y));
 
             // this.moveCarAlongXY();
             break;
@@ -253,19 +261,21 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
         var xPlace = this.currentLayer.getTileX(this.marker.x);
         var yPlace = this.currentLayer.getTileY(this.marker.y)
 
+        console.log(xPlace + ", " + yPlace);
         // map.fill(currentTile, currentLayer.getTileX(marker.x), currentLayer.getTileY(marker.y), 4, 4, currentLayer);
     }
 }
 
 TowerDefense.WorldState.prototype.findPathTo = function(originx, originy, tilex, tiley) {
     var _this = this;
+    console.log("find path");
     this.pathfinder.setCallbackFunction(function(path) {
         path = path || [];
         for(var i = 0, ilen = path.length; i < ilen; i++) {
             _this.map.putTile(10, path[i].x, path[i].y, _this.layer1);
         }
         _this.car_path = path;
-        _this.monsters.setAll('path', _this.car_path);
+        // _this.monsters.setAll('path', _this.car_path);
         _this.blocked = false;
     });
 
@@ -393,3 +403,8 @@ TowerDefense.Enemy.prototype.reachedXY = function(position){
         return false;
     }
 };
+
+TowerDefense.Enemy.prototype.setPath = function(path) {
+  this.path = path;
+  console.log("set path: " + this.path.length);
+}
