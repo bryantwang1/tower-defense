@@ -20,13 +20,14 @@ TowerDefense.WorldState.prototype.init = function () {
     this.layer2;
     this.groundTile = 2;
     this.wallTile = 5;
-
-
     this.pathfinder;
-    this.lifeText;
-    this.life = 20;
     this.placedWalls = [];
     this.canPlaceWall = false;
+
+    this.lifeText;
+    this.life = 20;
+    this.goldText;
+    this.gold = 60;
 
     this.marker;
     this.tileDimensions = 48;
@@ -236,7 +237,8 @@ TowerDefense.WorldState.prototype.create = function () {
 
     this.invalidTile = this.game.add.image(-100, -100, 'red');
 
-    this.lifeText = game.add.text(16, 16, 'Life: 20', { fontSize: '32px', fill: '#000' });
+    this.lifeText = game.add.text(this.tileDimensions * 10, this.tileDimensions * 20, 'Life: ' + this.life, { fontSize: '32px', fill: '#000' });
+    this.goldText = game.add.text(this.tileDimensions * 10, this.tileDimensions * 21, 'Gold: ' + this.gold, { fontSize: '32px', fill: '#000' });
 
     // add input and keybindings
     this.cursors = game.input.keyboard.createCursorKeys();
@@ -329,7 +331,12 @@ TowerDefense.WorldState.prototype.createTower = function(controlID, towerX, towe
     } else if(controlID === 3) {
         newTower = new TowerDefense.TeslaTower(this, towerX, towerY);
     }
-    this.towers.add(newTower);
+    console.log(newTower.price);
+    if(this.gold >= newTower.price) {
+        this.gold -= newTower.price;
+        this.goldText.text = "Gold: " + this.gold;
+        this.towers.add(newTower);
+    }
 }
 
 TowerDefense.WorldState.prototype.pickControl = function(sprite, pointer) {

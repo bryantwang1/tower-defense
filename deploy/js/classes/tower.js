@@ -12,6 +12,8 @@ TowerDefense.Tower = function (parentState, posX, posY, sprite, range, fireRate,
     // this.body.immovable = true;
     this.parentState = parentState;
 
+    this.price = 5;
+
     this.targetRadius = range || 96;
     this.shotDelay = fireRate; // milliseconds (10 bullets/second)
     this.bulletSpeed = bulletSpeed; // pixels/second
@@ -30,6 +32,8 @@ TowerDefense.Tower = function (parentState, posX, posY, sprite, range, fireRate,
       bullet.kill();
     }
 }
+
+TowerDefense.Tower.price = 5;
 
 TowerDefense.Tower.prototype = Object.create(Phaser.Sprite.prototype);
 TowerDefense.Tower.prototype.constructor = TowerDefense.Tower;
@@ -87,7 +91,9 @@ TowerDefense.Tower.prototype.update = function() {
             this.withinRadius.splice(index, 1);
           }
         //   monster.kill();
-          monster.destroy();
+            this.parentState.gold += monster.gold;
+            this.parentState.goldText.text = "Gold: " + this.parentState.gold;
+            monster.destroy();
         }
   }, null, this);
 
