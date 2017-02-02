@@ -36,6 +36,8 @@ TowerDefense.WorldState.prototype.init = function () {
     this.controlPanel;
     this.currentControl = 0;
     this.markerContent;
+    this.invalidTile;
+    this.tileIsInvalid;
 
     this.counter = 0;
     this.tickSpawnRate = 15; // standard spawn rate in ticks
@@ -232,6 +234,7 @@ TowerDefense.WorldState.prototype.create = function () {
         this.towers.add(newTower);
     }
 
+    this.invalidTile = this.game.add.image(-100, -100, 'red');
 
     this.lifeText = game.add.text(16, 16, 'Life: 20', { fontSize: '32px', fill: '#000' });
 
@@ -390,6 +393,23 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
         this.markerContent.y = -100;
       }
     }
+    // WHY DOESNT THIS WORK BRO
+    // if(this.currentControl.x === 0 && this.currentControl.y === 21) {
+    //     // this.map.putTile(-2, tileX, tileY, this.layer2);
+    //     this.pathfinder.updateGridXY(this.map.layers[1].data, tileX, tileY, this.wallTile, false);
+    //
+    //     this.findPathTo(this.layer2.getTileX(this.startX), this.layer2.getTileY(this.startY), this.layer2.getTileX(this.endX), this.layer2.getTileY(this.endY));
+    //
+    //     console.log(this.monsterPath.length);
+    //     //restore original tile
+    //     this.pathfinder.updateGridXY(this.map.layers[1].data, tileX, tileY, this.wallTile, true);
+    //
+    //     if(this.monsterPath.length <= 0) {
+    //         this.tileIsInvalid = true;
+    //     } else {
+    //         this.tileIsInvalid = false;
+    //     }
+    // }
 
     if (this.game.input.mousePointer.isDown && this.buildPhase && !this.combatPhase && this.marker.y < this.tileDimensions * 20) {
         var placeX = this.marker.x + this.tileDimensions/2;
@@ -420,8 +440,9 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
             this.findPathTo(this.layer2.getTileX(this.startX), this.layer2.getTileY(this.startY), this.layer2.getTileX(this.endX), this.layer2.getTileY(this.endY));
 
             if(this.monsterPath.length <= 0) {
+                //restore original tile
                 this.map.putTile(this.groundTile, tileX, tileY, this.layer2);
-                this.pathfinder.updateGrid(this.map.layers[1].data)
+                this.pathfinder.updateGrid(this.map.layers[1].data);
             } else {
                 this.map.putTile(this.wallTile, tileX, tileY, this.layer2);
                 this.pathfinder.updateGrid(this.map.layers[1].data);
@@ -434,6 +455,7 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
             console.log("boo");
             this.createTower(this.currentControl.x, placeX, placeY);
         }
+
     }
 }
 
@@ -486,8 +508,16 @@ TowerDefense.WorldState.prototype.update = function () {
         this.buildPhase = false;
         this.lifeText.text = "Game over, man, game over!";
     }
-    // if (!this.combatPhase && this.buildPhase) {
 
+    // console.log(this.tileIsInvalid);
+    // if (!this.combatPhase && this.buildPhase) {
+    //   if(!this.tileIsInvalid) {
+    //     this.invalidTile.x = -100;
+    //     this.invalidTile.y = -100;
+    //   } else {
+    //     this.invalidTile.x = this.marker.x;
+    //     this.invalidTile.y = this.marker.y;
+    //   }
     // }
     // this.monsters.callAll('animations.play', 'animations', 'run');
     // if(this.body.velocity.x !== 0 && this.body.velocity.y !== 0) {
