@@ -204,22 +204,27 @@ TowerDefense.WorldState.prototype.create = function () {
     this.monsters = this.game.add.group();
     var _this = this;
 
+// __________________________________________________
 
+    this.fliers = this.game.add.group()
+    // _this = this;
+    this.game.time.events.loop(1000, function(){
+      var randomStartY = (Math.floor(Math.random() * 300)) + 200;
+      var newFlyer = new TowerDefense.Flyer(_this, 48, randomStartY, 'runnerAir');
+      newFlyer.randomEndY = (Math.floor(Math.random() * 300)) + 200;
 
-    // this.fliers = this.game.add.group()
-    // // _this = this;
-    // this.game.time.events.loop(1000, function(){
-    //   var randomStartY = (Math.floor(Math.random() * 300)) + 200;
-    //   var newFlyer = new TowerDefense.Flyer(_this, 48, randomStartY, 'star');
-    //   newFlyer.randomEndY = (Math.floor(Math.random() * 300)) + 200;
-    //
-    //   _this.monsters.add(newFlyer);
-    // });
+      _this.monsters.add(newFlyer);
+
+      newFlyer.animations.add('run', [0,1,2], false);
+      newFlyer.animations.play('run', 10, true);
+
+    });
+
     // var newEnemy = new TowerDefense.Enemy(TowerDefense, 48, 48, 'car');
     // this.monsters.add(newEnemy);
     // var _this = this;
     // this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
-    // create groups
+    // // create groups
 
     //  make towers
     this.towers = this.game.add.group()
