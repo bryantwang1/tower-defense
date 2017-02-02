@@ -30,8 +30,11 @@ TowerDefense.Enemy = function (parentState, posX, posY, sprite) {
     this.body.setSize(48, 48);
     this.maxHealth = 15;
     this.parentState = parentState;
+    this.frozen = false;
+    this.freezeCounter = 0;
 
-    this.moveSpeed = 200;
+    this.defaultSpeed = 200;
+    this.currentSpeed = this.defaultSpeed;
     this.body.immovable = true;
 
     this.path = [];
@@ -64,7 +67,7 @@ TowerDefense.Enemy.prototype.update = function () {
       if (!this.reachedXY(next_position)) {
         var moveX = (next_position.x * this.parentState.tileDimensions) + this.parentState.tileDimensions/2;
         var moveY = (next_position.y * this.parentState.tileDimensions) + this.parentState.tileDimensions/2;
-        this.game.physics.arcade.moveToXY(this, moveX, moveY, this.moveSpeed);
+        this.game.physics.arcade.moveToXY(this, moveX, moveY, this.currentSpeed);
       } else {
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
@@ -113,6 +116,20 @@ TowerDefense.Enemy.prototype.update = function () {
     }
   }
 
+  if(this.frozen) {
+      this.freezeCounter++;
+      if(this.freezeCounter > 180) {
+          this.currentSpeed = this.defaultSpeed;
+          this.frozen = false;
+      }
+  }
+
+}
+
+TowerDefense.Enemy.prototype.freeze = function(freezeAmount) {
+    this.currentSpeed = this.defaultSpeed * freezeAmount;
+    this.freezeCounter = 0;
+    this.frozen = true;
 }
 
 TowerDefense.Enemy.prototype.moveAlongXY = function() {
