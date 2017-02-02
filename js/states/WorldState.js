@@ -331,7 +331,7 @@ TowerDefense.WorldState.prototype.createTower = function(controlID, towerX, towe
     } else if(controlID === 3) {
         newTower = new TowerDefense.TeslaTower(this, towerX, towerY);
     }
-    console.log(newTower.price);
+
     if(this.gold >= newTower.price) {
         this.gold -= newTower.price;
         this.goldText.text = "Gold: " + this.gold;
@@ -422,11 +422,13 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
         var placeX = this.marker.x + this.tileDimensions/2;
         var placeY = this.marker.y + this.tileDimensions/2;
 
-        var searchCheck = false;
+        var towerCheck = false;
+        var wallCheck = true;
         this.placedWalls.forEach(function(point) {
             if(point.x === tileX) {
                 if(point.y === tileY) {
-                    searchCheck = true;
+                    towerCheck = true;
+                    wallCheck = false;
                 }
             }
         });
@@ -435,30 +437,32 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
         this.towers.forEach(function(tower) {
             if(tower.body.x === _this.marker.x) {
                 if(tower.body.y === _this.marker.y) {
-                    searchCheck = false;
+                    towerCheck = false;
                 }
             }
         });
 
-
-        if(this.currentControl.x === 0 && this.currentControl.y === 21) {
-            this.map.putTile(-2, tileX, tileY, this.layer2);
-            this.pathfinder.updateGrid(this.map.layers[1].data);
-            this.findPathTo(this.layer2.getTileX(this.startX), this.layer2.getTileY(this.startY), this.layer2.getTileX(this.endX), this.layer2.getTileY(this.endY));
-
-            if(this.monsterPath.length <= 0) {
-                //restore original tile
-                this.map.putTile(this.groundTile, tileX, tileY, this.layer2);
+        if(this.currentControl.x === 0 && this.currentControl.y === 21 && wallCheck) {
+            if(this.gold >= 2) {
+                this.gold -= 2;
+                this.goldText.text = "Gold: " + this.gold;
+                this.map.putTile(-2, tileX, tileY, this.layer2);
                 this.pathfinder.updateGrid(this.map.layers[1].data);
-            } else {
-                this.map.putTile(this.wallTile, tileX, tileY, this.layer2);
-                this.pathfinder.updateGrid(this.map.layers[1].data);
-                var newPoint = new Phaser.Point(tileX, tileY);
-                this.placedWalls.push(newPoint);
+                this.findPathTo(this.layer2.getTileX(this.startX), this.layer2.getTileY(this.startY), this.layer2.getTileX(this.endX), this.layer2.getTileY(this.endY));
+
+                if(this.monsterPath.length <= 0) {
+                    //restore original tile
+                    this.map.putTile(this.groundTile, tileX, tileY, this.layer2);
+                    this.pathfinder.updateGrid(this.map.layers[1].data);
+                } else {
+                    this.map.putTile(this.wallTile, tileX, tileY, this.layer2);
+                    this.pathfinder.updateGrid(this.map.layers[1].data);
+                    var newPoint = new Phaser.Point(tileX, tileY);
+                    this.placedWalls.push(newPoint);
+                }
+                console.log("moo");
             }
-
-            console.log("moo");
-        } else if(this.currentControl.x >= 0 && this.currentControl.y === 20 && searchCheck) {
+        } else if(this.currentControl.x >= 0 && this.currentControl.y === 20 && towerCheck) {
             console.log("boo");
             this.createTower(this.currentControl.x, placeX, placeY);
         }
