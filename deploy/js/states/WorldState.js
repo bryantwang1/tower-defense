@@ -45,12 +45,12 @@ TowerDefense.WorldState.prototype.init = function () {
 
     this.cursors;
     this.blocked = false;
+    this.towers;
     this.monsters;
     // to hold monsters members so we can check them
     this.monsterPath = [];
     this.startX;
     this.startY;
-    this.towers;
 
     // round management properties
     this.roundCounter = 0;
@@ -205,34 +205,11 @@ TowerDefense.WorldState.prototype.create = function () {
 
     // generate path
     this.findPathTo(this.layer2.getTileX(this.startX), this.layer2.getTileY(this.startY), this.layer2.getTileX(this.endX), this.layer2.getTileY(this.endY));
-    // add sprites
+    // add groups
+    this.towers = this.game.add.group()
     this.monsters = this.game.add.group();
     var _this = this;
 
-// __________________________________________________
-
-    this.fliers = this.game.add.group()
-    // _this = this;
-    this.game.time.events.loop(1000, function(){
-      var randomStartY = (Math.floor(Math.random() * 300)) + 200;
-      var newFlyer = new TowerDefense.Flyer(_this, 48, randomStartY, 'runnerAir');
-      newFlyer.randomEndY = (Math.floor(Math.random() * 300)) + 200;
-
-      _this.monsters.add(newFlyer);
-
-      newFlyer.animations.add('run', [0,1,2], false);
-      newFlyer.animations.play('run', 10, true);
-
-    });
-
-    // var newEnemy = new TowerDefense.Enemy(TowerDefense, 48, 48, 'car');
-    // this.monsters.add(newEnemy);
-    // var _this = this;
-    // this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
-    // // create groups
-
-    //  make towers
-    this.towers = this.game.add.group()
 
     for(var i=0; i < 2; i++) {
         var newTower = new TowerDefense.Tower(this, this.tileDimensions * 4 - this.tileDimensions/2, this.tileDimensions * 4 + i * this.tileDimensions*2 - this.tileDimensions/2, 'machine-tower', this.tileDimensions * 4, 1000, 3, 600, 'bullet');
@@ -498,9 +475,9 @@ TowerDefense.WorldState.prototype.update = function () {
         var _this = this;
         var spawnIntervalCheck = this.counter % this.tickSpawnRate === 0;
 
-        if(this.counter > 0 && this.counter < 200){
+        if(this.counter > 0 && this.counter < 300){
             if(spawnIntervalCheck) {
-                var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerBasic_2');
+                var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerBasic_2', 1, 200, 25);
 
                 newEnemy.setPath(this.monsterPath);
                 this.monsters.add(newEnemy);
@@ -510,9 +487,9 @@ TowerDefense.WorldState.prototype.update = function () {
 
             }
         }
-        if(this.counter > 300 && this.counter < 500){
+        if(this.counter > 900 && this.counter < 1100){
             if(spawnIntervalCheck) {
-                var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerTank');
+                var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerTank', 5, 100, 75);
                 newEnemy.setPath(this.monsterPath);
                 this.monsters.add(newEnemy);
 
@@ -520,6 +497,21 @@ TowerDefense.WorldState.prototype.update = function () {
                 newEnemy.animations.play('run', 7, true);
             }
         }
+
+        // _this = this;
+        if(this.counter > 500 && this.counter < 800) {
+            if(spawnIntervalCheck*2) {
+                var randomStartY = (Math.floor(Math.random() * 250)) + 50;
+                var newFlyer = new TowerDefense.Flyer(this, 48, randomStartY);
+                newFlyer.randomEndY = (Math.floor(Math.random() * 250)) + 600;
+
+                this.monsters.add(newFlyer);
+
+                newFlyer.animations.add('run', [0,1,2], false);
+                newFlyer.animations.play('run', 10, true);
+            }
+        };
+
         if(this.counter > 500) {
             if(this.monsters.length <= 0) {
                 this.combatPhase = false;
