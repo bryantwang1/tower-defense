@@ -27,7 +27,7 @@ TowerDefense.WorldState.prototype.init = function () {
     this.lifeText;
     this.life = 20;
     this.goldText;
-    this.gold = 500;
+    this.gold = 80;
 
     this.marker;
     this.tileDimensions = 48;
@@ -41,7 +41,7 @@ TowerDefense.WorldState.prototype.init = function () {
     this.tileIsInvalid;
 
     this.counter = 0;
-    this.tickSpawnRate = 15; // standard spawn rate in ticks
+    this.tickSpawnRate = 60; // standard spawn rate in ticks
     this.waves;
 
     this.cursors;
@@ -552,16 +552,66 @@ TowerDefense.WorldState.prototype.generateWaves = function() {
 
 }
 
+TowerDefense.WorldState.prototype.generateWaves2 = function () {
+    var modifiedSpawn = this.tickSpawnRate - this.roundCounter*2;
+    if(modifiedSpawn < 15) {
+        modifiedSpawn = 15;
+    }
+    var spawnIntervalCheck = this.counter % modifiedSpawn === 0;
+    var tankSpawnInterval = this.counter % (modifiedSpawn*2) === 0;
+    var waveLength = 100 + this.roundCounter * 50;
+    var waveGap = 200 + this.roundCounter * 20;
+
+    if(this.counter > 1 && this.counter < waveGap + waveLength){
+        if(spawnIntervalCheck) {
+            var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerBasic_2', 1, 200, 25);
+
+            newEnemy.setPath(this.monsterPath);
+            this.monsters.add(newEnemy);
+
+            newEnemy.animations.add('run', [0,1,2,3,4], false);
+            newEnemy.animations.play('run', 10, true);
+
+        }
+    }
+    if(this.counter > waveGap + 200 && this.counter < waveGap + 200 + waveLength){
+        if(tankSpawnInterval) {
+            var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerTank', 5, 100, 75);
+            newEnemy.setPath(this.monsterPath);
+            this.monsters.add(newEnemy);
+
+            newEnemy.animations.add('run', [0,1,2], false);
+            newEnemy.animations.play('run', 7, true);
+        }
+    }
+
+    // _this = this;
+    if(this.counter > waveGap + 100 && this.counter < waveGap + 100 + waveLength && this.roundCounter > 5) {
+        if(tankSpawnInterval) {
+            var randomStartY = (Math.floor(Math.random() * 250)) + 50;
+            var newFlyer = new TowerDefense.Flyer(this, 48, randomStartY);
+            newFlyer.randomEndY = (Math.floor(Math.random() * 250)) + 600;
+
+            this.monsters.add(newFlyer);
+
+            newFlyer.animations.add('run', [0,1,2], false);
+            newFlyer.animations.play('run', 10, true);
+        }
+    };
+}
+
 TowerDefense.WorldState.prototype.update = function () {
 
     if(this.combatPhase && !this.buildPhase) {
         this.counter++;
         // seems to run ~60 tickets per second
         var _this = this;
-        this.generateWaves();
+        this.generateWaves2();
 
         if(this.counter > 500) {
             if(this.monsters.length <= 0) {
+                this.gold += 100;
+                this.goldText.text = "$ " + this.gold;
                 this.combatPhase = false;
                 this.buildPhase = true;
             }
