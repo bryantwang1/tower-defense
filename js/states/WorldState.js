@@ -22,6 +22,7 @@ TowerDefense.WorldState.prototype.init = function () {
     this.lifeText;
     this.life = 20;
     this.placedWalls = [];
+    this.placedTowers = [];
 
     this.marker;
     this.tileDimensions = 48;
@@ -164,6 +165,16 @@ TowerDefense.WorldState.prototype.create = function () {
     this.map.putTile(-1, 39, 18, this.layer2);
     this.map.putTile(-1, 0, 1, this.layer2);
 
+    var _this = this;
+    this.map.layers[1].data.forEach(function(row) {
+        row.forEach(function(tile) {
+            if(tile.index === 1) {
+                var newPoint = new Phaser.Point(tile.x, tile.y);
+                _this.placedWalls.push(newPoint);
+            }
+        });
+    });
+
     this.currentLayer = this.layer2;
     this.map.setCollision(this.obstacleTile);
 
@@ -299,6 +310,20 @@ TowerDefense.WorldState.prototype.createControlPanel = function() {
 //     this.currentTile = this.game.math.snapToFloor(pointer.x, this.tileDimensions) / this.tileDimensions;
 // }
 
+TowerDefense.WorldState.prototype.createTower = function(controlID, towerX, towerY) {
+    var newTower;
+    if(controlID === 0) {
+        newTower = new TowerDefense.Tower(this, towerX, towerY, 'machine-tower', this.tileDimensions * 4, 1000, 3, 600, 'bullet');
+    } else if(controlID === 1) {
+        newTower = new TowerDefense.RocketTower(this, towerX, towerY);
+    } else if(controlID === 2) {
+        newTower = new TowerDefense.FreezeTower(this, towerX, towerY);
+    } else if(controlID === 3) {
+        newTower = new TowerDefense.TeslaTower(this, towerX, towerY);
+    }
+    this.towers.add(newTower);
+}
+
 TowerDefense.WorldState.prototype.pickControl = function(sprite, pointer) {
 
     var controlX = this.game.math.snapToFloor(pointer.x, this.tileDimensions) / this.tileDimensions;
@@ -328,28 +353,42 @@ TowerDefense.WorldState.prototype.pickControl = function(sprite, pointer) {
 
 TowerDefense.WorldState.prototype.updateMarker = function() {
 
-    this.marker.x = this.currentLayer.getTileX(this.game.input.activePointer.worldX) * this.tileDimensions;
-    this.marker.y = this.currentLayer.getTileY(this.game.input.activePointer.worldY) * this.tileDimensions;
+    var tileX = this.currentLayer.getTileX(this.game.input.activePointer.worldX);
+    var tileY =  this.currentLayer.getTileY(this.game.input.activePointer.worldY);
+
+    this.marker.x = tileX * this.tileDimensions;
+    this.marker.y = tileY * this.tileDimensions;
 
     if (this.game.input.mousePointer.isDown && this.buildPhase && !this.combatPhase && this.marker.y < this.tileDimensions * 20) {
         var placeX = this.marker.x + this.tileDimensions/2;
         var placeY = this.marker.y + this.tileDimensions/2;
 
+        var searchCheck = false;
+        this.placedWalls.forEach(function(point) {
+            if(point.x === tileX) {
+                if(point.y === tileY) {
+                    searchCheck = true;
+                }
+            }
+        });
+
+        var _this = this;
+        this.towers.forEach(function(tower) {
+            if(tower.body.x === _this.marker.x) {
+                if(tower.body.y === _this.marker.y) {
+                    searchCheck = false;
+                }
+            }
+        });
+        console.log(searchCheck);
+
         if(this.currentControl.x === 0 && this.currentControl.y === 21) {
-            this.map.putTile(1, this.currentLayer.getTileX(this.game.input.activePointer.worldX), this.currentLayer.getTileY(this.game.input.activePointer.worldY), this.layer2);
+            this.map.putTile(1, tileX, tileY, this.layer2);
             this.pathfinder.updateGrid(this.map.layers[1].data);
-        } else if(this.currentControl.x === 0) {
-            var newTower = new TowerDefense.Tower(this, placeX, placeY, 'machine-tower', this.tileDimensions * 4, 1000, 3, 600, 'bullet');
-            this.towers.add(newTower);
-        } else if(this.currentControl.x === 1) {
-            var rocketTower = new TowerDefense.RocketTower(this, placeX, placeY);
-            this.towers.add(rocketTower);
-        } else if(this.currentControl.x === 2) {
-            var freezeTower = new TowerDefense.FreezeTower(this, placeX, placeY);
-            this.towers.add(freezeTower);
-        } else if(this.currentControl.x === 3) {
-            var teslaTower = new TowerDefense.TeslaTower(this, placeX, placeY);
-            this.towers.add(teslaTower);
+            var newPoint = new Phaser.Point(tileX, tileY);
+            this.placedWalls.push(newPoint);
+        } else if(searchCheck) {
+            this.createTower(this.currentControl.x, placeX, placeY);
         }
     }
 }
