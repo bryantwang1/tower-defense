@@ -18,7 +18,7 @@ TowerDefense.FreezeTower.prototype.getExplosion = function(x, y) {
     explosion = this.game.add.sprite(0, 0, 'explosion-freeze');
     explosion.anchor.setTo(0.5, 0.5);
 
-    var animation = explosion.animations.add('boom', [0,2,4,5,6,7,8,9,10,11,12], 30, false);
+    var animation = explosion.animations.add('boom', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], 100, false);
     animation.killOnComplete = true;
 
     this.explosionGroup.add(explosion);
