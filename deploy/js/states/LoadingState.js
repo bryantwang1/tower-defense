@@ -16,15 +16,18 @@ TowerDefense.LoadingState.prototype.init = function (next_state) {
 TowerDefense.LoadingState.prototype.preload = function () {
     "use strict";
     this.game.load.image('ground_1x1', '../assets/tilemaps/tiles/ground_1x1.png');
+    this.game.load.image('tempGround', '../assets/tilemaps/tiles/ground_temp_tile48.png');
+    this.game.load.image('tempWall', '../assets/tilemaps/tiles/tower_temp_tile48.png');
     this.game.load.image('car', '../assets/car90.png');
+    this.game.load.image('star', '../assets/star.png');
     this.game.load.image('freeze', '../assets/freeze.png');
     this.game.load.image('diamond', '../assets/diamond.png');
     this.game.load.image('bullet', '../assets/bullet.png');
     this.game.load.image('rocket', '../assets/rocket.png');
-    this.game.load.image('machine-tower', '../assets/machine-tower.png');
-    this.game.load.image('rocket-tower', '../assets/rocket-tower.png');
-    this.game.load.image('freeze-tower', '../assets/freeze-tower.png');
-    this.game.load.image('tesla-tower', '../assets/tesla-tower.png');
+    this.game.load.image('machine-tower', '../assets/machine-tower48.png');
+    this.game.load.image('rocket-tower', '../assets/rocket-tower48.png');
+    this.game.load.image('freeze-tower', '../assets/freeze-tower48.png');
+    this.game.load.image('tesla-tower', '../assets/tesla-tower48.png');
     this.game.load.image('runnerBasic', '../assets/runnerBasic.png');
     this.game.load.image('arrow', '../assets/cannon.png');
     this.game.load.image('runnerTank', '../assets/runnerTank.png');
