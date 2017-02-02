@@ -381,29 +381,22 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
             }
         });
 
-        this.map.putTile(-2, tileX, tileY, this.layer2);
-        this.pathfinder.updateGrid(this.map.layers[1].data);
-        this.findPathTo(this.layer2.getTileX(this.startX), this.layer2.getTileY(this.startY), this.layer2.getTileX(this.endX), this.layer2.getTileY(this.endY));
 
-        if(this.monsterPath.length <= 0) {
-            this.canPlaceWall = false;
-        } else {
-            this.canPlaceWall = true;
-        }
-
-        if(searchCheck) {
-            this.map.putTile(1, tileX, tileY, this.layer2);
-        } else {
-            this.map.putTile(0, tileX, tileY, this.layer2);
-        }
-        this.pathfinder.updateGrid(this.map.layers[1].data);
-        console.log(this.canPlaceWall);
-
-        if(this.currentControl.x === 0 && this.currentControl.y === 21 && this.canPlaceWall) {
-            this.map.putTile(1, tileX, tileY, this.layer2);
+        if(this.currentControl.x === 0 && this.currentControl.y === 21) {
+            this.map.putTile(-2, tileX, tileY, this.layer2);
             this.pathfinder.updateGrid(this.map.layers[1].data);
-            var newPoint = new Phaser.Point(tileX, tileY);
-            this.placedWalls.push(newPoint);
+            this.findPathTo(this.layer2.getTileX(this.startX), this.layer2.getTileY(this.startY), this.layer2.getTileX(this.endX), this.layer2.getTileY(this.endY));
+
+            if(this.monsterPath.length <= 0) {
+                this.map.putTile(0, tileX, tileY, this.layer2);
+                this.pathfinder.updateGrid(this.map.layers[1].data)
+            } else {
+                this.map.putTile(1, tileX, tileY, this.layer2);
+                this.pathfinder.updateGrid(this.map.layers[1].data);
+                var newPoint = new Phaser.Point(tileX, tileY);
+                this.placedWalls.push(newPoint);
+            }
+
             console.log("moo");
         } else if(this.currentControl.x >= 0 && this.currentControl.y === 20 && searchCheck) {
             console.log("boo");
