@@ -18,6 +18,10 @@ TowerDefense.WorldState.prototype.init = function () {
     this.map;
     this.layer1;
     this.layer2;
+    this.groundTile = 2;
+    this.wallTile = 5;
+
+
     this.pathfinder;
     this.lifeText;
     this.life = 20;
@@ -56,8 +60,7 @@ TowerDefense.WorldState.prototype.init = function () {
 
     // create map and set tileset
     this.map = this.game.add.tilemap();
-    this.map.addTilesetImage('tempGround', null, 48, 48, 0, 0, 0);
-    this.map.addTilesetImage('tempWall', null, 48, 48, 0, 0, 1);
+    this.map.addTilesetImage('ground_1x1', null, 48, 48);
 
     // initialize pathfinding
     // this.tileDimensions = new Phaser.Point(this.map.tileWidth, this.map.tileHeight);
@@ -73,7 +76,7 @@ TowerDefense.WorldState.prototype.create = function () {
     this.layer1 = this.map.create('level1', 40, 22, 48, 48);
     for(var i = 0; i < 40;i++) {
       for(var j = 0; j < 20;j++) {
-        this.map.putTile(0, i, j, this.layer1);
+        this.map.putTile(this.groundTile, i, j, this.layer1);
       }
     }
 
@@ -88,87 +91,87 @@ TowerDefense.WorldState.prototype.create = function () {
 
             //create boundaries
             if(i === 0) {
-                this.map.putTile(1, i, j, this.layer2);
+                this.map.putTile(this.wallTile, i, j, this.layer2);
             }
             if(i === 39) {
-                this.map.putTile(1, i, j, this.layer2);
+                this.map.putTile(this.wallTile, i, j, this.layer2);
             }
             if(j === 0) {
-                this.map.putTile(1, i, j, this.layer2);
+                this.map.putTile(this.wallTile, i, j, this.layer2);
             }
             if(j === 19) {
-                this.map.putTile(1, i, j, this.layer2);
+                this.map.putTile(this.wallTile, i, j, this.layer2);
             }
             if(i === 3 && j !== 1) {
-                this.map.putTile(1, i, j, this.layer2);
+                this.map.putTile(this.wallTile, i, j, this.layer2);
             }
             if(i === 5 && j !== 18) {
-                this.map.putTile(1, i, j, this.layer2);
+                this.map.putTile(this.wallTile, i, j, this.layer2);
             }
             if(i === 7 && j !== 1) {
-                this.map.putTile(1, i, j, this.layer2);
+                this.map.putTile(this.wallTile, i, j, this.layer2);
             }
             if(i === 13 && j !== 18) {
-                this.map.putTile(1, i, j, this.layer2);
+                this.map.putTile(this.wallTile, i, j, this.layer2);
             }
 
         // this.map.putTile(0, i, j, this.layer1);
       }
     }
 
-    this.map.putTile(1, 12, 17, this.layer2);
-    this.map.putTile(1, 11, 17, this.layer2);
-    this.map.putTile(1, 10, 17, this.layer2);
-    this.map.putTile(1, 9, 17, this.layer2);
-    this.map.putTile(1, 8, 15, this.layer2);
-    this.map.putTile(1, 9, 15, this.layer2);
-    this.map.putTile(1, 10, 15, this.layer2);
-    this.map.putTile(1, 10, 15, this.layer2);
-    this.map.putTile(1, 11, 15, this.layer2);
-    this.map.putTile(1, 11, 15, this.layer2);
-    this.map.putTile(1, 12, 13, this.layer2);
-    this.map.putTile(1, 11, 13, this.layer2);
-    this.map.putTile(1, 10, 13, this.layer2);
-    this.map.putTile(1, 10, 13, this.layer2);
-    this.map.putTile(1, 9, 13, this.layer2);
-    this.map.putTile(1, 8, 11, this.layer2);
-    this.map.putTile(1, 9, 11, this.layer2);
-    this.map.putTile(1, 10, 11, this.layer2);
-    this.map.putTile(1, 11, 11, this.layer2);
-    this.map.putTile(1, 12, 9, this.layer2);
-    this.map.putTile(1, 11, 9, this.layer2);
-    this.map.putTile(1, 11, 9, this.layer2);
-    this.map.putTile(1, 10, 9, this.layer2);
-    this.map.putTile(1, 9, 9, this.layer2);
-    this.map.putTile(1, 8, 2, this.layer2);
-    this.map.putTile(1, 9, 2, this.layer2);
-    this.map.putTile(1, 9, 2, this.layer2);
-    this.map.putTile(1, 10, 2, this.layer2);
-    this.map.putTile(1, 11, 2, this.layer2);
-    this.map.putTile(1, 9, 4, this.layer2);
-    this.map.putTile(1, 9, 4, this.layer2);
-    this.map.putTile(1, 10, 4, this.layer2);
-    this.map.putTile(1, 10, 4, this.layer2);
-    this.map.putTile(1, 11, 4, this.layer2);
-    this.map.putTile(1, 11, 4, this.layer2);
-    this.map.putTile(1, 12, 4, this.layer2);
-    this.map.putTile(1, 12, 4, this.layer2);
-    this.map.putTile(1, 8, 7, this.layer2);
-    this.map.putTile(1, 9, 7, this.layer2);
-    this.map.putTile(1, 9, 5, this.layer2);
-    this.map.putTile(1, 9, 5, this.layer2);
-    this.map.putTile(1, 10, 7, this.layer2);
-    this.map.putTile(1, 10, 7, this.layer2);
-    this.map.putTile(1, 11, 7, this.layer2);
-    this.map.putTile(1, 11, 7, this.layer2);
-    this.map.putTile(1, 11, 6, this.layer2);
+    this.map.putTile(this.wallTile, 12, 17, this.layer2);
+    this.map.putTile(this.wallTile, 11, 17, this.layer2);
+    this.map.putTile(this.wallTile, 10, 17, this.layer2);
+    this.map.putTile(this.wallTile, 9, 17, this.layer2);
+    this.map.putTile(this.wallTile, 8, 15, this.layer2);
+    this.map.putTile(this.wallTile, 9, 15, this.layer2);
+    this.map.putTile(this.wallTile, 10, 15, this.layer2);
+    this.map.putTile(this.wallTile, 10, 15, this.layer2);
+    this.map.putTile(this.wallTile, 11, 15, this.layer2);
+    this.map.putTile(this.wallTile, 11, 15, this.layer2);
+    this.map.putTile(this.wallTile, 12, 13, this.layer2);
+    this.map.putTile(this.wallTile, 11, 13, this.layer2);
+    this.map.putTile(this.wallTile, 10, 13, this.layer2);
+    this.map.putTile(this.wallTile, 10, 13, this.layer2);
+    this.map.putTile(this.wallTile, 9, 13, this.layer2);
+    this.map.putTile(this.wallTile, 8, 11, this.layer2);
+    this.map.putTile(this.wallTile, 9, 11, this.layer2);
+    this.map.putTile(this.wallTile, 10, 11, this.layer2);
+    this.map.putTile(this.wallTile, 11, 11, this.layer2);
+    this.map.putTile(this.wallTile, 12, 9, this.layer2);
+    this.map.putTile(this.wallTile, 11, 9, this.layer2);
+    this.map.putTile(this.wallTile, 11, 9, this.layer2);
+    this.map.putTile(this.wallTile, 10, 9, this.layer2);
+    this.map.putTile(this.wallTile, 9, 9, this.layer2);
+    this.map.putTile(this.wallTile, 8, 2, this.layer2);
+    this.map.putTile(this.wallTile, 9, 2, this.layer2);
+    this.map.putTile(this.wallTile, 9, 2, this.layer2);
+    this.map.putTile(this.wallTile, 10, 2, this.layer2);
+    this.map.putTile(this.wallTile, 11, 2, this.layer2);
+    this.map.putTile(this.wallTile, 9, 4, this.layer2);
+    this.map.putTile(this.wallTile, 9, 4, this.layer2);
+    this.map.putTile(this.wallTile, 10, 4, this.layer2);
+    this.map.putTile(this.wallTile, 10, 4, this.layer2);
+    this.map.putTile(this.wallTile, 11, 4, this.layer2);
+    this.map.putTile(this.wallTile, 11, 4, this.layer2);
+    this.map.putTile(this.wallTile, 12, 4, this.layer2);
+    this.map.putTile(this.wallTile, 12, 4, this.layer2);
+    this.map.putTile(this.wallTile, 8, 7, this.layer2);
+    this.map.putTile(this.wallTile, 9, 7, this.layer2);
+    this.map.putTile(this.wallTile, 9, 5, this.layer2);
+    this.map.putTile(this.wallTile, 9, 5, this.layer2);
+    this.map.putTile(this.wallTile, 10, 7, this.layer2);
+    this.map.putTile(this.wallTile, 10, 7, this.layer2);
+    this.map.putTile(this.wallTile, 11, 7, this.layer2);
+    this.map.putTile(this.wallTile, 11, 7, this.layer2);
+    this.map.putTile(this.wallTile, 11, 6, this.layer2);
     this.map.putTile(-1, 39, 18, this.layer2);
     this.map.putTile(-1, 0, 1, this.layer2);
 
     var _this = this;
     this.map.layers[1].data.forEach(function(row) {
         row.forEach(function(tile) {
-            if(tile.index === 1) {
+            if(tile.index === _this.wallTile) {
                 var newPoint = new Phaser.Point(tile.x, tile.y);
                 _this.placedWalls.push(newPoint);
             }
@@ -192,7 +195,7 @@ TowerDefense.WorldState.prototype.create = function () {
     this.game.input.addMoveCallback(this.updateMarker, this);
 
     // set grid for pathing
-    var walkables = [-1, 0];
+    var walkables = [-1, this.groundTile];
     this.pathfinder.setGrid(this.map.layers[1].data, walkables);
 
     // generate path
@@ -388,10 +391,10 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
             this.findPathTo(this.layer2.getTileX(this.startX), this.layer2.getTileY(this.startY), this.layer2.getTileX(this.endX), this.layer2.getTileY(this.endY));
 
             if(this.monsterPath.length <= 0) {
-                this.map.putTile(0, tileX, tileY, this.layer2);
+                this.map.putTile(this.groundTile, tileX, tileY, this.layer2);
                 this.pathfinder.updateGrid(this.map.layers[1].data)
             } else {
-                this.map.putTile(1, tileX, tileY, this.layer2);
+                this.map.putTile(this.wallTile, tileX, tileY, this.layer2);
                 this.pathfinder.updateGrid(this.map.layers[1].data);
                 var newPoint = new Phaser.Point(tileX, tileY);
                 this.placedWalls.push(newPoint);
