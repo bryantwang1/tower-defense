@@ -20,8 +20,8 @@ TowerDefense.LoadingState.prototype.preload = function () {
     this.game.load.image('star', '../assets/star.png');
     this.game.load.image('bullet', '../assets/bullet.png');
     this.game.load.image('arrow', '../assets/cannon.png');
-    this.game.load.image('runner', '../assets/runnerBasic.png');
     this.game.load.image('runnerTank', '../assets/runnerTank.png');
+    this.game.load.spritesheet('runner', '../assets/runner2.png', 57.6, 48);
     this.game.load.spritesheet('explosion', '../assets/ex1.png', 50, 50);
 };
 
