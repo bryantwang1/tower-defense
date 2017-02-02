@@ -1,7 +1,7 @@
 var TowerDefense = TowerDefense || {};
 
 TowerDefense.Flyer = function (parentState, posX, posY) {
-    TowerDefense.Enemy.call(this, parentState, posX, posY, 'runnerAir', 1, 100, 25);
+    TowerDefense.Enemy.call(this, parentState, posX, posY, 'runnerAir', 1, 60, 25);
 
     // this.parentState = parentState;
     this.randomEndY;
