@@ -291,6 +291,7 @@ TowerDefense.WorldState.prototype.pickControl = function(sprite, pointer) {
         this.counter = 0;
         this.monsters.removeAll(true, true);
         this.roundCounter++;
+        console.log("round: " +  this.roundCounter);
     } else if (this. currentControl === 2) {
         // debugging control
         var alivers = [];
