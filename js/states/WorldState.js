@@ -27,7 +27,7 @@ TowerDefense.WorldState.prototype.init = function () {
     this.lifeText;
     this.life = 20;
     this.goldText;
-    this.gold = 80;
+    this.gold = 100;
 
     this.marker;
     this.tileDimensions = 48;
@@ -570,10 +570,11 @@ TowerDefense.WorldState.prototype.generateWaves2 = function () {
     var tankSpawnInterval = this.counter % (modifiedSpawn*2) === 0;
     var waveLength = 100 + this.roundCounter * 50;
     var waveGap = 200 + this.roundCounter * 20;
+    var healthBonus = this.roundCounter * 5 + this.roundCounter;
 
     if(this.counter > 1 && this.counter < waveGap + waveLength){
         if(spawnIntervalCheck) {
-            var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerBasic_2', 1, 200, 25);
+            var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerBasic_2', 1, 200, 25 + healthBonus);
 
             newEnemy.setPath(this.monsterPath);
             this.monsters.add(newEnemy);
@@ -585,7 +586,7 @@ TowerDefense.WorldState.prototype.generateWaves2 = function () {
     }
     if(this.counter > waveGap + 200 && this.counter < waveGap + 200 + waveLength){
         if(tankSpawnInterval) {
-            var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerTank', 5, 100, 75);
+            var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerTank', 5, 100, 75 + healthBonus);
             newEnemy.setPath(this.monsterPath);
             this.monsters.add(newEnemy);
 
