@@ -229,6 +229,9 @@ TowerDefense.WorldState.prototype.create = function () {
     this.freezeTowerText = game.add.text(this.tileDimensions *  2 + 8, this.tileDimensions * 21, TowerDefense.FreezeTower.price, { fontSize: '24px', fill: '#000' });
     this.teslaTowerText = game.add.text(this.tileDimensions * 3, this.tileDimensions * 21, TowerDefense.TeslaTower.price, { fontSize: '24px', fill: '#000' });
 
+    this.wallText = game.add.text(this.tileDimensions * 4 + 16, this.tileDimensions * 21, "2", { fontSize: '24px', fill: '#000' });
+
+
     // add input and keybindings
     this.cursors = game.input.keyboard.createCursorKeys();
 
@@ -616,7 +619,7 @@ TowerDefense.WorldState.prototype.update = function () {
 
         if(this.counter > 500) {
             if(this.monsters.length <= 0) {
-                this.gold += this.roundCounter * 5;
+                this.gold += this.roundCounter * 10;
                 this.goldText.text = "$ " + this.gold;
                 this.combatPhase = false;
                 this.buildPhase = true;
