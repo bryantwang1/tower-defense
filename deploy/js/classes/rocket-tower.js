@@ -3,12 +3,12 @@ var TowerDefense = TowerDefense || {};
 
 TowerDefense.RocketTower = function (parentState, posX, posY) {
       // parentState, posX, posY, range, fireRate, dmg, bulletspeed, image
-      TowerDefense.Tower.call(this, parentState, posX, posY, 'rocket-tower', parentState.tileDimensions * 10, 800, 5, 200, 'rocket');
+      TowerDefense.Tower.call(this, parentState, posX, posY, 'rocket-tower', parentState.tileDimensions * 8, 800, 5, 160, 'rocket');
 
-      this.price = 15;
+      this.price = 20;
 }
 
-TowerDefense.RocketTower.price = 15;
+TowerDefense.RocketTower.price = 20;
 
 
 

@@ -223,6 +223,12 @@ TowerDefense.WorldState.prototype.create = function () {
     this.lifeText = game.add.text(this.tileDimensions * 15, this.tileDimensions * 20, '' + this.life, { fontSize: '32px', fill: '#000' });
     this.roundCounterText = game.add.text(this.tileDimensions * 20, this.tileDimensions * 20, 'Round ' + this.roundCounter, { fontSize: '32px', fill: '#000' });
 
+    // Tower Prices
+    this.gunTowerText = game.add.text(this.tileDimensions - 32 , this.tileDimensions * 21, TowerDefense.Tower.price, { fontSize: '24px', fill: '#000' });
+    this.rocketTowerText = game.add.text(this.tileDimensions + 8, this.tileDimensions * 21, TowerDefense.RocketTower.price, { fontSize: '24px', fill: '#000' });
+    this.freezeTowerText = game.add.text(this.tileDimensions *  2 + 8, this.tileDimensions * 21, TowerDefense.FreezeTower.price, { fontSize: '24px', fill: '#000' });
+    this.teslaTowerText = game.add.text(this.tileDimensions * 3, this.tileDimensions * 21, TowerDefense.TeslaTower.price, { fontSize: '24px', fill: '#000' });
+
     // add input and keybindings
     this.cursors = game.input.keyboard.createCursorKeys();
 
@@ -610,7 +616,7 @@ TowerDefense.WorldState.prototype.update = function () {
 
         if(this.counter > 500) {
             if(this.monsters.length <= 0) {
-                this.gold += 100;
+                this.gold += this.roundCounter * 5;
                 this.goldText.text = "$ " + this.gold;
                 this.combatPhase = false;
                 this.buildPhase = true;
