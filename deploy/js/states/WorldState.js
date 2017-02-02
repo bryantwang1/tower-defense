@@ -433,9 +433,14 @@ TowerDefense.WorldState.prototype.update = function () {
 
         if(this.counter > 0 && this.counter < 200){
             if(spawnIntervalCheck) {
-                var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerBasic');
+                var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerBasic_2');
+
                 newEnemy.setPath(this.monsterPath);
                 this.monsters.add(newEnemy);
+
+                newEnemy.animations.add('run', [0,1,2,3,4], false);
+                newEnemy.animations.play('run', 10, true);
+
             }
         }
         if(this.counter > 300 && this.counter < 500){
@@ -443,6 +448,9 @@ TowerDefense.WorldState.prototype.update = function () {
                 var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerTank');
                 newEnemy.setPath(this.monsterPath);
                 this.monsters.add(newEnemy);
+
+                newEnemy.animations.add('run', [0,1,2], false);
+                newEnemy.animations.play('run', 7, true);
             }
         }
         if(this.counter > 500) {
