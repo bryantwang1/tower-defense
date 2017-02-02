@@ -20,7 +20,7 @@ var TowerDefense = TowerDefense || {};
 //     game.physics.arcade.overlap(character, enemyGroup, collisionHandler, null, this);
 // }
 // this.sprite = game.add.sprite(50, 50, 'car'); // standard car sprite
-TowerDefense.Enemy = function (parentState, posX, posY, sprite) {
+TowerDefense.Enemy = function (parentState, posX, posY, sprite, gold) {
     Phaser.Sprite.call(this, game, posX, posY, sprite);
     // this.outOfBoundsKill = true;
     // this.checkWorldBounds = true;
@@ -32,6 +32,8 @@ TowerDefense.Enemy = function (parentState, posX, posY, sprite) {
     this.parentState = parentState;
     this.frozen = false;
     this.freezeCounter = 0;
+
+    this.gold = gold || 1;
 
     this.defaultSpeed = 200;
     this.currentSpeed = this.defaultSpeed;

@@ -5,7 +5,10 @@ TowerDefense.TeslaTower = function (parentState, posX, posY) {
       // parentState, posX, posY, range, fireRate, dmg, bulletspeed, image
       TowerDefense.Tower.call(this, parentState, posX, posY, 'tesla-tower', parentState.tileDimensions * 3.5, 1, .5, 300, 'lightning');
 
+      this.price = 100;
 }
+
+TowerDefense.TeslaTower.price = 100;
 
 TowerDefense.TeslaTower.prototype = Object.create(TowerDefense.Tower.prototype);
 TowerDefense.TeslaTower.prototype.constructor = TowerDefense.TeslaTower;

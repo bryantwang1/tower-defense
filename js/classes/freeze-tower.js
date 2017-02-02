@@ -5,8 +5,11 @@ TowerDefense.FreezeTower = function (parentState, posX, posY) {
       // parentState, posX, posY, range, fireRate, dmg, bulletspeed, image
       TowerDefense.Tower.call(this, parentState, posX, posY, 'freeze-tower', parentState.tileDimensions * 4, 800, 0, 300, 'freeze');
 
+      this.price = 10;
       this.freezeAmount = 0.2;
 }
+
+TowerDefense.FreezeTower.price = 10;
 
 TowerDefense.FreezeTower.prototype = Object.create(TowerDefense.Tower.prototype);
 TowerDefense.FreezeTower.prototype.constructor = TowerDefense.FreezeTower;
