@@ -12,7 +12,7 @@ TowerDefense.Tower = function (parentState, posX, posY, sprite, range, fireRate,
     // this.body.immovable = true;
     this.parentState = parentState;
 
-    this.targetRadius = range;
+    this.targetRadius = range || 96;
     this.shotDelay = fireRate; // milliseconds (10 bullets/second)
     this.bulletSpeed = bulletSpeed; // pixels/second
     this.damageDealt = damage;

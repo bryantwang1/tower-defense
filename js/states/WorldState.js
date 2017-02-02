@@ -21,7 +21,7 @@ TowerDefense.WorldState.prototype.init = function () {
     this.pathfinder;
 
     this.marker;
-    this.tileDimensions = 32;
+    this.tileDimensions = 48;
     this.currentTile = 0;
     this.currentLayer;
 
@@ -52,21 +52,22 @@ TowerDefense.WorldState.prototype.init = function () {
 
     // create map and set tileset
     this.map = this.game.add.tilemap();
-    this.map.addTilesetImage('ground_1x1');
+    this.map.addTilesetImage('tempGround', null, 48, 48, 0, 0, 0);
+    this.map.addTilesetImage('tempWall', null, 48, 48, 0, 0, 1);
 
     // initialize pathfinding
     // this.tileDimensions = new Phaser.Point(this.map.tileWidth, this.map.tileHeight);
     this.pathfinder = this.game.plugins.add(Phaser.Plugin.PathFinderPlugin);
 
     // property/variable to hold which gid should be collidable
-    this.obstacleTile = 4;
+    this.obstacleTile = 1;
 };
 
 TowerDefense.WorldState.prototype.create = function () {
     "use strict";
     //  Creates a new blank layer and sets the map dimensions.
-    this.layer1 = this.map.create('level1', 25, 23, 32, 32);
-    for(var i = 0; i < 25;i++) {
+    this.layer1 = this.map.create('level1', 40, 22, 48, 48);
+    for(var i = 0; i < 40;i++) {
       for(var j = 0; j < 20;j++) {
         this.map.putTile(0, i, j, this.layer1);
       }
@@ -76,102 +77,102 @@ TowerDefense.WorldState.prototype.create = function () {
     this.layer1.resizeWorld();
 
     // Create collision/obstacle layer; extra long X to let enemies go off screen
-    this.layer2 = this.map.createBlankLayer('level2', 27, 23, 32, 32);
+    this.layer2 = this.map.createBlankLayer('level2', 42, 22, 48, 48);
     // create maze
-    for(var i = 0; i < 25;i++) {
+    for(var i = 0; i < 40;i++) {
       for(var j = 0; j < 20;j++) {
 
             //create boundaries
             if(i === 0) {
-                this.map.putTile(4, i, j, this.layer2);
+                this.map.putTile(1, i, j, this.layer2);
             }
-            if(i === 24) {
-                this.map.putTile(4, i, j, this.layer2);
+            if(i === 39) {
+                this.map.putTile(1, i, j, this.layer2);
             }
             if(j === 0) {
-                this.map.putTile(4, i, j, this.layer2);
+                this.map.putTile(1, i, j, this.layer2);
             }
             if(j === 19) {
-                this.map.putTile(4, i, j, this.layer2);
+                this.map.putTile(1, i, j, this.layer2);
             }
             if(i === 3 && j !== 1) {
-                this.map.putTile(4, i, j, this.layer2);
+                this.map.putTile(1, i, j, this.layer2);
             }
             if(i === 5 && j !== 18) {
-                this.map.putTile(4, i, j, this.layer2);
+                this.map.putTile(1, i, j, this.layer2);
             }
             if(i === 7 && j !== 1) {
-                this.map.putTile(4, i, j, this.layer2);
+                this.map.putTile(1, i, j, this.layer2);
             }
             if(i === 13 && j !== 18) {
-                this.map.putTile(4, i, j, this.layer2);
+                this.map.putTile(1, i, j, this.layer2);
             }
 
-        this.map.putTile(0, i, j, this.layer1);
+        // this.map.putTile(0, i, j, this.layer1);
       }
     }
 
-    this.map.putTile(4, 12, 17, this.layer2);
-    this.map.putTile(4, 11, 17, this.layer2);
-    this.map.putTile(4, 10, 17, this.layer2);
-    this.map.putTile(4, 9, 17, this.layer2);
-    this.map.putTile(4, 8, 15, this.layer2);
-    this.map.putTile(4, 9, 15, this.layer2);
-    this.map.putTile(4, 10, 15, this.layer2);
-    this.map.putTile(4, 10, 15, this.layer2);
-    this.map.putTile(4, 11, 15, this.layer2);
-    this.map.putTile(4, 11, 15, this.layer2);
-    this.map.putTile(4, 12, 13, this.layer2);
-    this.map.putTile(4, 11, 13, this.layer2);
-    this.map.putTile(4, 10, 13, this.layer2);
-    this.map.putTile(4, 10, 13, this.layer2);
-    this.map.putTile(4, 9, 13, this.layer2);
-    this.map.putTile(4, 8, 11, this.layer2);
-    this.map.putTile(4, 9, 11, this.layer2);
-    this.map.putTile(4, 10, 11, this.layer2);
-    this.map.putTile(4, 11, 11, this.layer2);
-    this.map.putTile(4, 12, 9, this.layer2);
-    this.map.putTile(4, 11, 9, this.layer2);
-    this.map.putTile(4, 11, 9, this.layer2);
-    this.map.putTile(4, 10, 9, this.layer2);
-    this.map.putTile(4, 9, 9, this.layer2);
-    this.map.putTile(4, 8, 2, this.layer2);
-    this.map.putTile(4, 9, 2, this.layer2);
-    this.map.putTile(4, 9, 2, this.layer2);
-    this.map.putTile(4, 10, 2, this.layer2);
-    this.map.putTile(4, 11, 2, this.layer2);
-    this.map.putTile(4, 9, 4, this.layer2);
-    this.map.putTile(4, 9, 4, this.layer2);
-    this.map.putTile(4, 10, 4, this.layer2);
-    this.map.putTile(4, 10, 4, this.layer2);
-    this.map.putTile(4, 11, 4, this.layer2);
-    this.map.putTile(4, 11, 4, this.layer2);
-    this.map.putTile(4, 12, 4, this.layer2);
-    this.map.putTile(4, 12, 4, this.layer2);
-    this.map.putTile(4, 8, 7, this.layer2);
-    this.map.putTile(4, 9, 7, this.layer2);
-    this.map.putTile(4, 9, 5, this.layer2);
-    this.map.putTile(4, 9, 5, this.layer2);
-    this.map.putTile(4, 10, 7, this.layer2);
-    this.map.putTile(4, 10, 7, this.layer2);
-    this.map.putTile(4, 11, 7, this.layer2);
-    this.map.putTile(4, 11, 7, this.layer2);
-    this.map.putTile(4, 11, 6, this.layer2);
-    this.map.putTile(-1, 24, 18, this.layer2);
+    this.map.putTile(1, 12, 17, this.layer2);
+    this.map.putTile(1, 11, 17, this.layer2);
+    this.map.putTile(1, 10, 17, this.layer2);
+    this.map.putTile(1, 9, 17, this.layer2);
+    this.map.putTile(1, 8, 15, this.layer2);
+    this.map.putTile(1, 9, 15, this.layer2);
+    this.map.putTile(1, 10, 15, this.layer2);
+    this.map.putTile(1, 10, 15, this.layer2);
+    this.map.putTile(1, 11, 15, this.layer2);
+    this.map.putTile(1, 11, 15, this.layer2);
+    this.map.putTile(1, 12, 13, this.layer2);
+    this.map.putTile(1, 11, 13, this.layer2);
+    this.map.putTile(1, 10, 13, this.layer2);
+    this.map.putTile(1, 10, 13, this.layer2);
+    this.map.putTile(1, 9, 13, this.layer2);
+    this.map.putTile(1, 8, 11, this.layer2);
+    this.map.putTile(1, 9, 11, this.layer2);
+    this.map.putTile(1, 10, 11, this.layer2);
+    this.map.putTile(1, 11, 11, this.layer2);
+    this.map.putTile(1, 12, 9, this.layer2);
+    this.map.putTile(1, 11, 9, this.layer2);
+    this.map.putTile(1, 11, 9, this.layer2);
+    this.map.putTile(1, 10, 9, this.layer2);
+    this.map.putTile(1, 9, 9, this.layer2);
+    this.map.putTile(1, 8, 2, this.layer2);
+    this.map.putTile(1, 9, 2, this.layer2);
+    this.map.putTile(1, 9, 2, this.layer2);
+    this.map.putTile(1, 10, 2, this.layer2);
+    this.map.putTile(1, 11, 2, this.layer2);
+    this.map.putTile(1, 9, 4, this.layer2);
+    this.map.putTile(1, 9, 4, this.layer2);
+    this.map.putTile(1, 10, 4, this.layer2);
+    this.map.putTile(1, 10, 4, this.layer2);
+    this.map.putTile(1, 11, 4, this.layer2);
+    this.map.putTile(1, 11, 4, this.layer2);
+    this.map.putTile(1, 12, 4, this.layer2);
+    this.map.putTile(1, 12, 4, this.layer2);
+    this.map.putTile(1, 8, 7, this.layer2);
+    this.map.putTile(1, 9, 7, this.layer2);
+    this.map.putTile(1, 9, 5, this.layer2);
+    this.map.putTile(1, 9, 5, this.layer2);
+    this.map.putTile(1, 10, 7, this.layer2);
+    this.map.putTile(1, 10, 7, this.layer2);
+    this.map.putTile(1, 11, 7, this.layer2);
+    this.map.putTile(1, 11, 7, this.layer2);
+    this.map.putTile(1, 11, 6, this.layer2);
+    this.map.putTile(-1, 39, 18, this.layer2);
 
     this.currentLayer = this.layer2;
     this.map.setCollision(this.obstacleTile);
 
     // set starting points for path
-    this.startX = this.layer2.getTileX(48) * 32;
-    this.startY = this.layer2.getTileY(48) * 32;
+    this.startX = this.layer2.getTileX(this.tileDimensions*1.5) * this.tileDimensions;
+    this.startY = this.layer2.getTileY(this.tileDimensions*1.5) * this.tileDimensions;
     // set ending points for path
-    this.endX = this.layer2.getTileX(48 + 800) * 32;
-    this.endY = this.layer2.getTileY(48 + 544) * 32;
+    this.endX = this.layer2.getTileX(this.tileDimensions*1.5 + 1920) * this.tileDimensions;
+    this.endY = this.layer2.getTileY(this.tileDimensions*1.5 + 816) * this.tileDimensions;
 
     //  Create our tile selector at the top of the screen
     this.createControlPanel();
-    this.createTileSelector();
+    // this.createTileSelector();
 
     this.game.input.addMoveCallback(this.updateMarker, this);
 
@@ -206,12 +207,11 @@ TowerDefense.WorldState.prototype.create = function () {
     this.towers = this.game.add.group()
 
     for(var i=0; i < 2; i++) {
-        var newTower = new TowerDefense.Tower(this, 100, 100 + i * 110, 'machine-tower', 110, 1000, 3, 600, 'bullet');
+        var newTower = new TowerDefense.Tower(this, this.tileDimensions * 4 - this.tileDimensions/2, this.tileDimensions * 4 + i * this.tileDimensions*2 - this.tileDimensions/2, 'machine-tower', this.tileDimensions * 4, 1000, 3, 600, 'bullet');
 
+        var rocketTower = new TowerDefense.RocketTower(this, 500, 100 + i * 110);
         this.towers.add(newTower);
         this.towers.add(rocketTower);
-        this.towers.add(freezeTower);
-        this.towers.add(teslaTower);
     }
 
     // add input and keybindings
@@ -227,8 +227,8 @@ TowerDefense.WorldState.prototype.keyPress = function(key) {
     {
         case Phaser.Keyboard.T:
         //find path
-            this.marker.x = this.layer2.getTileX(this.game.input.activePointer.worldX) * 32;
-            this.marker.y = this.layer2.getTileY(this.game.input.activePointer.worldY) * 32;
+            this.marker.x = this.layer2.getTileX(this.game.input.activePointer.worldX) * this.tileDimensions;
+            this.marker.y = this.layer2.getTileY(this.game.input.activePointer.worldY) * this.tileDimensions;
 
             this.blocked = true;
 
@@ -237,37 +237,37 @@ TowerDefense.WorldState.prototype.keyPress = function(key) {
     }
 }
 
-TowerDefense.WorldState.prototype.createTileSelector = function() {
-
-    //  Our tile selection window
-    var tileSelector = this.game.add.group();
-
-    var tileSelectorBackground = this.game.make.graphics();
-    tileSelectorBackground.beginFill(0x000000, 0.5);
-    tileSelectorBackground.drawRect(0, 640, 800, 34);
-    tileSelectorBackground.endFill();
-
-    tileSelector.add(tileSelectorBackground);
-
-    var tileStrip = tileSelector.create(1, 641, 'ground_1x1');
-    tileStrip.inputEnabled = true;
-    tileStrip.events.onInputDown.add(this.pickTile, this);
-
-    tileSelector.fixedToCamera = true;
-
-    //  Our painting marker
-    this.marker = this.game.add.graphics();
-    this.marker.lineStyle(2, 0x000000, 1);
-    this.marker.drawRect(0, 0, 32, 32);
-
-}
+// TowerDefense.WorldState.prototype.createTileSelector = function() {
+//
+//     //  Our tile selection window
+//     var tileSelector = this.game.add.group();
+//
+//     var tileSelectorBackground = this.game.make.graphics();
+//     tileSelectorBackground.beginFill(0x000000, 0.5);
+//     tileSelectorBackground.drawRect(0, 640, 800, 34);
+//     tileSelectorBackground.endFill();
+//
+//     tileSelector.add(tileSelectorBackground);
+//
+//     var tileStrip = tileSelector.create(1, 641, 'ground_1x1');
+//     tileStrip.inputEnabled = true;
+//     tileStrip.events.onInputDown.add(this.pickTile, this);
+//
+//     tileSelector.fixedToCamera = true;
+//
+//     //  Our painting marker
+//     this.marker = this.game.add.graphics();
+//     this.marker.lineStyle(2, 0x000000, 1);
+//     this.marker.drawRect(0, 0, 32, 32);
+//
+// }
 
 TowerDefense.WorldState.prototype.createControlPanel = function() {
     var controlPanel = this.game.add.group();
 
     var controlPanelBackground = this.game.make.graphics();
     controlPanelBackground.beginFill(0x999999, 1);
-    controlPanelBackground.drawRect(0, 672, 800, 64);
+    controlPanelBackground.drawRect(0, this.tileDimensions*20, 1920, this.tileDimensions*2);
     controlPanelBackground.endFill();
 
     controlPanel.add(controlPanelBackground);
@@ -278,26 +278,37 @@ TowerDefense.WorldState.prototype.createControlPanel = function() {
 
     controlPanel.fixedToCamera = true;
 
-    var cannon = controlPanel.create(-2, 673, 'arrow');
+    this.marker = this.game.add.graphics();
+    this.marker.lineStyle(2, 0x000000, 1);
+    this.marker.drawRect(0, 0, this.tileDimensions, this.tileDimensions);
+
+    var machineGun = controlPanel.create(0 -2, this.tileDimensions*20, 'machine-tower');
+    var rocketTower = controlPanel.create(this.tileDimensions -2, this.tileDimensions*20, 'rocket-tower');
+    var rocketTower = controlPanel.create(this.tileDimensions*2 -2, this.tileDimensions*20, 'freeze-tower');
+    var rocketTower = controlPanel.create(this.tileDimensions*3 -2, this.tileDimensions*20, 'tesla-tower');
 }
 
 TowerDefense.WorldState.prototype.pickTile = function(sprite, pointer) {
 
-    this.currentTile = this.game.math.snapToFloor(pointer.x, 32) / 32;
+    this.currentTile = this.game.math.snapToFloor(pointer.x, this.tileDimensions) / this.tileDimensions;
     console.log();
 }
 
 TowerDefense.WorldState.prototype.pickControl = function(sprite, pointer) {
 
-    this.currentControl = this.game.math.snapToFloor(pointer.x, 32) / 32;
+    var controlX = this.game.math.snapToFloor(pointer.x, this.tileDimensions) / this.tileDimensions;
+    var controlY = this.game.math.snapToFloor(pointer.y, this.tileDimensions) / this.tileDimensions;
+    this.currentControl = new Phaser.Point(controlX, controlY);
     //Possibly add Y
     console.log(this.currentControl);
-    if(this.currentControl === 24) {
+    if(this.currentControl.x === 4) {
         this.counter = 0;
         this.monsters.removeAll(true, true);
         this.roundCounter++;
+        this.combatPhase = true;
+        this.buildPhase = false;
         console.log("round: " +  this.roundCounter);
-    } else if (this. currentControl === 2) {
+    } else if (this.currentControl.x === 5) {
         // debugging control
         var alivers = [];
         this.monsters.forEachAlive(function(monster) { alivers.push(monster) });
@@ -310,11 +321,11 @@ TowerDefense.WorldState.prototype.pickControl = function(sprite, pointer) {
 
 TowerDefense.WorldState.prototype.updateMarker = function() {
 
-    this.marker.x = this.currentLayer.getTileX(this.game.input.activePointer.worldX) * 32;
-    this.marker.y = this.currentLayer.getTileY(this.game.input.activePointer.worldY) * 32;
+    this.marker.x = this.currentLayer.getTileX(this.game.input.activePointer.worldX) * this.tileDimensions;
+    this.marker.y = this.currentLayer.getTileY(this.game.input.activePointer.worldY) * this.tileDimensions;
 
-    var xPlace = this.currentLayer.getTileX(this.marker.x);
-    var yPlace = this.currentLayer.getTileY(this.marker.y)
+    // var xPlace = this.currentLayer.getTileX(this.marker.x);
+    // var yPlace = this.currentLayer.getTileY(this.marker.y)
 
     // if (this.game.input.mousePointer.isDown && this.buildPhase && !this.combatPhase)
     // {
@@ -326,12 +337,23 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
     //
     //     // map.fill(currentTile, currentLayer.getTileX(marker.x), currentLayer.getTileY(marker.y), 4, 4, currentLayer);
     // }
-    if (this.game.input.mousePointer.isDown && this.buildPhase && !this.combatPhase && this.marker.y < 640) {
+    if (this.game.input.mousePointer.isDown && this.buildPhase && !this.combatPhase && this.marker.y < this.tileDimensions * 20) {
         console.log(this.currentLayer);
-        if(this.currentControl === 0) {
+        var placeX = this.marker.x + this.tileDimensions/2;
+        var placeY = this.marker.y + this.tileDimensions/2;
+        if(this.currentControl.x === 0) {
             console.log("input if");
-            var newTower = new TowerDefense.Tower(this, this.marker.x + this.tileDimensions/2, this.marker.y + this.tileDimensions/2, 'arrow', 110, 1000, 5, 600, 'star');
+            var newTower = new TowerDefense.Tower(this, placeX, placeY, 'machine-tower', this.tileDimensions * 4, 1000, 3, 600, 'bullet');
             this.towers.add(newTower);
+        } else if(this.currentControl.x === 1) {
+            var rocketTower = new TowerDefense.RocketTower(this, placeX, placeY);
+            this.towers.add(rocketTower);
+        } else if(this.currentControl.x === 2) {
+            var freezeTower = new TowerDefense.FreezeTower(this, placeX, placeY);
+            this.towers.add(freezeTower);
+        } else if(this.currentControl.x === 3) {
+            var teslaTower = new TowerDefense.TeslaTower(this, placeX, placeY);
+            this.towers.add(teslaTower);
         }
     }
 }
@@ -361,7 +383,7 @@ TowerDefense.WorldState.prototype.update = function () {
 
         if(this.counter > 0 && this.counter < 200){
             if(spawnIntervalCheck) {
-                var newEnemy = new TowerDefense.Enemy(_this, 48, 48, 'runnerBasic');
+                var newEnemy = new TowerDefense.Enemy(_this, this.tileDimensions*1.5, this.tileDimensions*1.5, 'runnerBasic');
                 newEnemy.setPath(_this.monsterPath);
                 _this.monsters.add(newEnemy);
                 // _this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
@@ -369,7 +391,7 @@ TowerDefense.WorldState.prototype.update = function () {
         }
         if(this.counter > 300 && this.counter < 500){
             if(spawnIntervalCheck) {
-                var newEnemy = new TowerDefense.Enemy(_this, 48, 48, 'runnerTank');
+                var newEnemy = new TowerDefense.Enemy(_this, this.tileDimensions*1.5, this.tileDimensions*1.5, 'runnerTank');
                 newEnemy.setPath(_this.monsterPath);
                 _this.monsters.add(newEnemy);
             }
@@ -378,10 +400,7 @@ TowerDefense.WorldState.prototype.update = function () {
 
     }
     this.monsters.callAll('animations.play', 'animations', 'run');
-    if(this.currentControl === 24) {
-        this.combatPhase = true;
-        this.buildPhase = false;
-    }
+
 
     // if(this.body.velocity.x !== 0 && this.body.velocity.y !== 0) {
 

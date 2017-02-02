@@ -27,8 +27,9 @@ TowerDefense.Enemy = function (parentState, posX, posY, sprite) {
     this.checkWorldBounds = true;
     this.game.physics.arcade.enable(this, true);
     this.anchor.setTo(0.5, 0.5);
-    this.body.setSize(32, 32);
+    this.body.setSize(48, 48);
     this.maxHealth = 15;
+    this.parentState = parentState;
 
     this.moveSpeed = 200;
     this.body.immovable = true;
@@ -64,14 +65,14 @@ TowerDefense.Enemy.prototype.update = function () {
       next_position = this.path[this.pathStep];
 
       if (!this.reachedXY(next_position)) {
-        var moveX = (next_position.x * 32) + 16;
-        var moveY = (next_position.y * 32) + 16;
+        var moveX = (next_position.x * this.parentState.tileDimensions) + this.parentState.tileDimensions/2;
+        var moveY = (next_position.y * this.parentState.tileDimensions) + this.parentState.tileDimensions/2;
         this.game.physics.arcade.moveToXY(this, moveX, moveY, this.moveSpeed);
       } else {
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
-        this.x = (next_position.x * 32) + 16;
-        this.y = (next_position.y * 32) + 16;
+        this.x = (next_position.x * this.parentState.tileDimensions) + this.parentState.tileDimensions/2;
+        this.y = (next_position.y * this.parentState.tileDimensions) + this.parentState.tileDimensions/2;
 
         if (this.pathStep < this.path.length - 1) {
           this.pathStep += 1;
@@ -119,7 +120,7 @@ TowerDefense.Enemy.prototype.moveAlongXY = function() {
 
 TowerDefense.Enemy.prototype.reachedXY = function(position){
     "use strict";
-    if (this.game.physics.arcade.distanceToXY(this, (position.x * 32)+16, (position.y * 32)+16) <= 3) {
+    if (this.game.physics.arcade.distanceToXY(this, (position.x * this.parentState.tileDimensions)+this.parentState.tileDimensions/2, (position.y * this.parentState.tileDimensions)+this.parentState.tileDimensions/2) <= 3) {
         return true;
     } else {
         return false;
