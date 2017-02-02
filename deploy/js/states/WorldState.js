@@ -33,7 +33,9 @@ TowerDefense.WorldState.prototype.init = function () {
     this.currentTile = 0;
     this.currentLayer;
 
+    this.controlPanel;
     this.currentControl = 0;
+    this.markerContent;
 
     this.counter = 0;
     this.tickSpawnRate = 15; // standard spawn rate in ticks
@@ -283,29 +285,29 @@ TowerDefense.WorldState.prototype.keyPress = function(key) {
 // }
 
 TowerDefense.WorldState.prototype.createControlPanel = function() {
-    var controlPanel = this.game.add.group();
+    this.controlPanel = this.game.add.group();
 
     var controlPanelBackground = this.game.make.graphics();
     controlPanelBackground.beginFill(0x999999, 1);
     controlPanelBackground.drawRect(0, this.tileDimensions*20, 1920, this.tileDimensions*2);
     controlPanelBackground.endFill();
 
-    controlPanel.add(controlPanelBackground);
+    this.controlPanel.add(controlPanelBackground);
 
     controlPanelBackground.inputEnabled = true;
     controlPanelBackground.events.onInputDown.add(this.pickControl, this);
 
 
-    controlPanel.fixedToCamera = true;
+    this.controlPanel.fixedToCamera = true;
 
     this.marker = this.game.add.graphics();
     this.marker.lineStyle(2, 0x000000, 1);
     this.marker.drawRect(0, 0, this.tileDimensions, this.tileDimensions);
 
-    var machineGun = controlPanel.create(0 -2, this.tileDimensions*20, 'machine-tower');
-    var rocketTower = controlPanel.create(this.tileDimensions -2, this.tileDimensions*20, 'rocket-tower');
-    var rocketTower = controlPanel.create(this.tileDimensions*2 -2, this.tileDimensions*20, 'freeze-tower');
-    var rocketTower = controlPanel.create(this.tileDimensions*3 -2, this.tileDimensions*20, 'tesla-tower');
+    var machineTower = this.controlPanel.create(0 -2, this.tileDimensions*20, 'machine-tower');
+    var rocketTower = this.controlPanel.create(this.tileDimensions -2, this.tileDimensions*20, 'rocket-tower');
+    var freezeTower = this.controlPanel.create(this.tileDimensions*2 -2, this.tileDimensions*20, 'freeze-tower');
+    var teslaTower = this.controlPanel.create(this.tileDimensions*3 -2, this.tileDimensions*20, 'tesla-tower');
 }
 
 // TowerDefense.WorldState.prototype.pickTile = function(sprite, pointer) {
@@ -352,6 +354,23 @@ TowerDefense.WorldState.prototype.pickControl = function(sprite, pointer) {
         // this.monsters.forEach(function(monster) { alls.push(monster) });
         // console.log("alls: " + alls.length);
     }
+    if(this.markerContent !== undefined) {
+      this.markerContent.destroy();
+    }
+
+    if(this.currentControl.x === 0 && this.currentControl.y === 20) {
+      // this.markerContent = new Phaser.Image(this.game, 500, 500, 'machine-tower');
+      this.markerContent = this.game.add.image(this.marker.x, this.marker.y, 'machine-tower');
+    } else if(this.currentControl.x === 1) {
+      // this.markerContent.destroy();
+      this.markerContent = this.game.add.image(this.marker.x, this.marker.y, 'rocket-tower');
+    } else if(this.currentControl.x === 2) {
+      // this.markerContent.destroy();
+      this.markerContent = this.game.add.image(this.marker.x, this.marker.y, 'freeze-tower');
+    } else if(this.currentControl.x === 3) {
+      // this.markerContent.destroy();
+      this.markerContent = this.game.add.image(this.marker.x, this.marker.y, 'tesla-tower');
+    }
 }
 
 TowerDefense.WorldState.prototype.updateMarker = function() {
@@ -361,6 +380,16 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
 
     this.marker.x = tileX * this.tileDimensions;
     this.marker.y = tileY * this.tileDimensions;
+
+    if(this.markerContent !== undefined) {
+      this.markerContent.x = this.marker.x;
+      this.markerContent.y = this.marker.y;
+
+      if(this.markerContent.y > this.tileDimensions * 19) {
+        this.markerContent.x = -100;
+        this.markerContent.y = -100;
+      }
+    }
 
     if (this.game.input.mousePointer.isDown && this.buildPhase && !this.combatPhase && this.marker.y < this.tileDimensions * 20) {
         var placeX = this.marker.x + this.tileDimensions/2;
