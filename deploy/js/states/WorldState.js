@@ -27,7 +27,7 @@ TowerDefense.WorldState.prototype.init = function () {
     this.lifeText;
     this.life = 20;
     this.goldText;
-    this.gold = 60;
+    this.gold = 500;
 
     this.marker;
     this.tileDimensions = 48;
@@ -108,69 +108,69 @@ TowerDefense.WorldState.prototype.create = function () {
             if(j === 19) {
                 this.map.putTile(this.wallTile, i, j, this.layer2);
             }
-            if(i === 3 && j !== 1) {
-                this.map.putTile(this.wallTile, i, j, this.layer2);
-            }
-            if(i === 5 && j !== 18) {
-                this.map.putTile(this.wallTile, i, j, this.layer2);
-            }
-            if(i === 7 && j !== 1) {
-                this.map.putTile(this.wallTile, i, j, this.layer2);
-            }
-            if(i === 13 && j !== 18) {
-                this.map.putTile(this.wallTile, i, j, this.layer2);
-            }
+            // if(i === 3 && j !== 1) {
+            //     this.map.putTile(this.wallTile, i, j, this.layer2);
+            // }
+            // if(i === 5 && j !== 18) {
+            //     this.map.putTile(this.wallTile, i, j, this.layer2);
+            // }
+            // if(i === 7 && j !== 1) {
+            //     this.map.putTile(this.wallTile, i, j, this.layer2);
+            // }
+            // if(i === 13 && j !== 18) {
+            //     this.map.putTile(this.wallTile, i, j, this.layer2);
+            // }
 
         // this.map.putTile(0, i, j, this.layer1);
       }
     }
 
-    this.map.putTile(this.wallTile, 12, 17, this.layer2);
-    this.map.putTile(this.wallTile, 11, 17, this.layer2);
-    this.map.putTile(this.wallTile, 10, 17, this.layer2);
-    this.map.putTile(this.wallTile, 9, 17, this.layer2);
-    this.map.putTile(this.wallTile, 8, 15, this.layer2);
-    this.map.putTile(this.wallTile, 9, 15, this.layer2);
-    this.map.putTile(this.wallTile, 10, 15, this.layer2);
-    this.map.putTile(this.wallTile, 10, 15, this.layer2);
-    this.map.putTile(this.wallTile, 11, 15, this.layer2);
-    this.map.putTile(this.wallTile, 11, 15, this.layer2);
-    this.map.putTile(this.wallTile, 12, 13, this.layer2);
-    this.map.putTile(this.wallTile, 11, 13, this.layer2);
-    this.map.putTile(this.wallTile, 10, 13, this.layer2);
-    this.map.putTile(this.wallTile, 10, 13, this.layer2);
-    this.map.putTile(this.wallTile, 9, 13, this.layer2);
-    this.map.putTile(this.wallTile, 8, 11, this.layer2);
-    this.map.putTile(this.wallTile, 9, 11, this.layer2);
-    this.map.putTile(this.wallTile, 10, 11, this.layer2);
-    this.map.putTile(this.wallTile, 11, 11, this.layer2);
-    this.map.putTile(this.wallTile, 12, 9, this.layer2);
-    this.map.putTile(this.wallTile, 11, 9, this.layer2);
-    this.map.putTile(this.wallTile, 11, 9, this.layer2);
-    this.map.putTile(this.wallTile, 10, 9, this.layer2);
-    this.map.putTile(this.wallTile, 9, 9, this.layer2);
-    this.map.putTile(this.wallTile, 8, 2, this.layer2);
-    this.map.putTile(this.wallTile, 9, 2, this.layer2);
-    this.map.putTile(this.wallTile, 9, 2, this.layer2);
-    this.map.putTile(this.wallTile, 10, 2, this.layer2);
-    this.map.putTile(this.wallTile, 11, 2, this.layer2);
-    this.map.putTile(this.wallTile, 9, 4, this.layer2);
-    this.map.putTile(this.wallTile, 9, 4, this.layer2);
-    this.map.putTile(this.wallTile, 10, 4, this.layer2);
-    this.map.putTile(this.wallTile, 10, 4, this.layer2);
-    this.map.putTile(this.wallTile, 11, 4, this.layer2);
-    this.map.putTile(this.wallTile, 11, 4, this.layer2);
-    this.map.putTile(this.wallTile, 12, 4, this.layer2);
-    this.map.putTile(this.wallTile, 12, 4, this.layer2);
-    this.map.putTile(this.wallTile, 8, 7, this.layer2);
-    this.map.putTile(this.wallTile, 9, 7, this.layer2);
-    this.map.putTile(this.wallTile, 9, 5, this.layer2);
-    this.map.putTile(this.wallTile, 9, 5, this.layer2);
-    this.map.putTile(this.wallTile, 10, 7, this.layer2);
-    this.map.putTile(this.wallTile, 10, 7, this.layer2);
-    this.map.putTile(this.wallTile, 11, 7, this.layer2);
-    this.map.putTile(this.wallTile, 11, 7, this.layer2);
-    this.map.putTile(this.wallTile, 11, 6, this.layer2);
+    // this.map.putTile(this.wallTile, 12, 17, this.layer2);
+    // this.map.putTile(this.wallTile, 11, 17, this.layer2);
+    // this.map.putTile(this.wallTile, 10, 17, this.layer2);
+    // this.map.putTile(this.wallTile, 9, 17, this.layer2);
+    // this.map.putTile(this.wallTile, 8, 15, this.layer2);
+    // this.map.putTile(this.wallTile, 9, 15, this.layer2);
+    // this.map.putTile(this.wallTile, 10, 15, this.layer2);
+    // this.map.putTile(this.wallTile, 10, 15, this.layer2);
+    // this.map.putTile(this.wallTile, 11, 15, this.layer2);
+    // this.map.putTile(this.wallTile, 11, 15, this.layer2);
+    // this.map.putTile(this.wallTile, 12, 13, this.layer2);
+    // this.map.putTile(this.wallTile, 11, 13, this.layer2);
+    // this.map.putTile(this.wallTile, 10, 13, this.layer2);
+    // this.map.putTile(this.wallTile, 10, 13, this.layer2);
+    // this.map.putTile(this.wallTile, 9, 13, this.layer2);
+    // this.map.putTile(this.wallTile, 8, 11, this.layer2);
+    // this.map.putTile(this.wallTile, 9, 11, this.layer2);
+    // this.map.putTile(this.wallTile, 10, 11, this.layer2);
+    // this.map.putTile(this.wallTile, 11, 11, this.layer2);
+    // this.map.putTile(this.wallTile, 12, 9, this.layer2);
+    // this.map.putTile(this.wallTile, 11, 9, this.layer2);
+    // this.map.putTile(this.wallTile, 11, 9, this.layer2);
+    // this.map.putTile(this.wallTile, 10, 9, this.layer2);
+    // this.map.putTile(this.wallTile, 9, 9, this.layer2);
+    // this.map.putTile(this.wallTile, 8, 2, this.layer2);
+    // this.map.putTile(this.wallTile, 9, 2, this.layer2);
+    // this.map.putTile(this.wallTile, 9, 2, this.layer2);
+    // this.map.putTile(this.wallTile, 10, 2, this.layer2);
+    // this.map.putTile(this.wallTile, 11, 2, this.layer2);
+    // this.map.putTile(this.wallTile, 9, 4, this.layer2);
+    // this.map.putTile(this.wallTile, 9, 4, this.layer2);
+    // this.map.putTile(this.wallTile, 10, 4, this.layer2);
+    // this.map.putTile(this.wallTile, 10, 4, this.layer2);
+    // this.map.putTile(this.wallTile, 11, 4, this.layer2);
+    // this.map.putTile(this.wallTile, 11, 4, this.layer2);
+    // this.map.putTile(this.wallTile, 12, 4, this.layer2);
+    // this.map.putTile(this.wallTile, 12, 4, this.layer2);
+    // this.map.putTile(this.wallTile, 8, 7, this.layer2);
+    // this.map.putTile(this.wallTile, 9, 7, this.layer2);
+    // this.map.putTile(this.wallTile, 9, 5, this.layer2);
+    // this.map.putTile(this.wallTile, 9, 5, this.layer2);
+    // this.map.putTile(this.wallTile, 10, 7, this.layer2);
+    // this.map.putTile(this.wallTile, 10, 7, this.layer2);
+    // this.map.putTile(this.wallTile, 11, 7, this.layer2);
+    // this.map.putTile(this.wallTile, 11, 7, this.layer2);
+    // this.map.putTile(this.wallTile, 11, 6, this.layer2);
     this.map.putTile(-1, 39, 18, this.layer2);
     this.map.putTile(-1, 0, 1, this.layer2);
 
@@ -211,11 +211,11 @@ TowerDefense.WorldState.prototype.create = function () {
     this.monsters = this.game.add.group();
     var _this = this;
 
-    for(var i=0; i < 2; i++) {
-        var newTower = new TowerDefense.Tower(this, this.tileDimensions * 4 - this.tileDimensions/2, this.tileDimensions * 4 + i * this.tileDimensions*2 - this.tileDimensions/2, 'machine-tower', this.tileDimensions * 4, 1000, 3, 600, 'bullet');
-
-        this.towers.add(newTower);
-    }
+    // for(var i=0; i < 2; i++) {
+    //     var newTower = new TowerDefense.Tower(this, this.tileDimensions * 4 - this.tileDimensions/2, this.tileDimensions * 4 + i * this.tileDimensions*2 - this.tileDimensions/2, 'machine-tower', this.tileDimensions * 4, 1000, 3, 600, 'bullet');
+    //
+    //     this.towers.add(newTower);
+    // }
 
     this.invalidTile = this.game.add.image(-100, -100, 'red');
 
@@ -296,10 +296,11 @@ TowerDefense.WorldState.prototype.createControlPanel = function() {
     var rocketTower = this.controlPanel.create(this.tileDimensions -2, this.tileDimensions*20, 'rocket-tower');
     var freezeTower = this.controlPanel.create(this.tileDimensions*2 -2, this.tileDimensions*20, 'freeze-tower');
     var teslaTower = this.controlPanel.create(this.tileDimensions*3 -2, this.tileDimensions*20, 'tesla-tower');
-    var roundStart = this.controlPanel.create(this.tileDimensions*4 -2, this.tileDimensions*20, 'play');
-    var wall = this.controlPanel.create(this.tileDimensions*0 -2, this.tileDimensions*21, 'wall');
+    var roundStart = this.controlPanel.create(this.tileDimensions*5 -2, this.tileDimensions*20, 'play');
+    var wall = this.controlPanel.create(this.tileDimensions*4 -2, this.tileDimensions*20, 'wall');
     var life = this.controlPanel.create(this.tileDimensions*14 -2, this.tileDimensions*20, 'life');
     var coin = this.controlPanel.create(this.tileDimensions*9 -2, this.tileDimensions*20, 'coin');
+    var dollar = this.controlPanel.create(this.tileDimensions*6-2, this.tileDimensions*20, 'gold');
 }
 
 // TowerDefense.WorldState.prototype.pickTile = function(sprite, pointer) {
@@ -333,7 +334,7 @@ TowerDefense.WorldState.prototype.pickControl = function(sprite, pointer) {
     this.currentControl = new Phaser.Point(controlX, controlY);
     //Possibly add Y
     console.log(this.currentControl);
-    if(this.currentControl.x === 4) {
+    if(this.currentControl.x === 5 && !this.combatPhase && this.buildPhase) {
         this.counter = 0;
         this.monsters.removeAll(true, true);
         this.roundCounter++;
@@ -342,9 +343,8 @@ TowerDefense.WorldState.prototype.pickControl = function(sprite, pointer) {
         this.buildPhase = false;
         console.log("round: " +  this.roundCounter);
           this.roundCounterText.text ='Round ' + this.roundCounter;
-    } else if (this.currentControl.x === 5) {
-
     }
+
     if(this.markerContent !== undefined) {
       this.markerContent.destroy();
     }
@@ -361,7 +361,9 @@ TowerDefense.WorldState.prototype.pickControl = function(sprite, pointer) {
     } else if(this.currentControl.x === 3) {
       // this.markerContent.destroy();
       this.markerContent = this.game.add.image(this.marker.x, this.marker.y, 'tesla-tower');
-  } else if(this.currentControl.x === 5) {
+  } else if(this.currentControl.x === 4) {
+      this.markerContent = this.game.add.image(this.marker.x, this.marker.y, 'wall');
+  } else if(this.currentControl.x === 6) {
       this.markerContent = this.game.add.image(this.marker.x, this.marker.y, 'gold');
   }
 }
@@ -425,7 +427,7 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
             }
         });
 
-        if(this.currentControl.x === 0 && this.currentControl.y === 21 && wallCheck) {
+        if(this.currentControl.x === 4 && this.currentControl.y === 20 && wallCheck) {
             if(this.gold >= 2) {
                 this.gold -= 2;
                 this.goldText.text = "$ " + this.gold;
@@ -445,17 +447,17 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
                 }
                 console.log("moo");
             }
-        } else if(this.currentControl.x >= 0 && this.currentControl.x < 5 && this.currentControl.y === 20 && towerCheck) {
+        } else if(this.currentControl.x >= 0 && this.currentControl.x < 4 && this.currentControl.y === 20 && towerCheck) {
             console.log("boo");
             this.createTower(this.currentControl.x, placeX, placeY);
-        } else if(this.currentControl.x === 5) {
+        } else if(this.currentControl.x === 6) {
             var isTower = false;
             this.towers.forEach(function(tower) {
                 if(tower.body.x === _this.marker.x) {
                     if(tower.body.y === _this.marker.y) {
                         isTower = true;
                         _this.gold += Math.floor(tower.price/2);
-                        _this.goldText.text = "Gold: " + _this.gold;
+                        _this.goldText.text = "$" + _this.gold;
                         tower.destroy();
                     } else {
                         isTower = false;
@@ -469,15 +471,14 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
                 if(tileX !== 0 && tileX !== 39 && tileY !== 0 && tileY !== 19) {
                     this.map.putTile(this.groundTile, tileX, tileY, this.layer2);
                     this.pathfinder.updateGrid(this.map.layers[1].data);
-                    console.log(this.placedWalls);
                     for(var i=0;i < this.placedWalls.length;i++) {
                         var wall = this.placedWalls[i];
                         if(wall.x === tileX && wall.y === tileY) {
                             this.placedWalls.splice(i, 1);
+                            this.gold++;
+                            this.goldText.text = "$" + this.gold;
                         }
                     }
-                    this.gold++;
-                    this.goldText.text = "Gold: " + this.gold;
                 }
             }
         }
