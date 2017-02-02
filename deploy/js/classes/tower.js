@@ -92,7 +92,7 @@ TowerDefense.Tower.prototype.update = function() {
           }
         //   monster.kill();
             this.parentState.gold += monster.gold;
-            this.parentState.goldText.text = "Gold: " + this.parentState.gold;
+            this.parentState.goldText.text = "$" + this.parentState.gold;
             monster.destroy();
         }
   }, null, this);

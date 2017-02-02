@@ -221,7 +221,7 @@ TowerDefense.WorldState.prototype.create = function () {
       _this.monsters.add(newFlyer);
 
       newFlyer.animations.add('run', [0,1,2], false);
-      newFlyer.animations.play('run', 10, true);
+      newFlyer.animations.play('run', 20, true);
 
     });
 
@@ -242,8 +242,9 @@ TowerDefense.WorldState.prototype.create = function () {
 
     this.invalidTile = this.game.add.image(-100, -100, 'red');
 
-    this.lifeText = game.add.text(this.tileDimensions * 10, this.tileDimensions * 20, 'Life: ' + this.life, { fontSize: '32px', fill: '#000' });
-    this.goldText = game.add.text(this.tileDimensions * 10, this.tileDimensions * 21, 'Gold: ' + this.gold, { fontSize: '32px', fill: '#000' });
+    this.goldText = game.add.text(this.tileDimensions * 10, this.tileDimensions * 20, '$' + this.gold, { fontSize: '32px', fill: '#000' });
+    this.lifeText = game.add.text(this.tileDimensions * 15, this.tileDimensions * 20, '' + this.life, { fontSize: '32px', fill: '#000' });
+    this.roundCounterText = game.add.text(this.tileDimensions * 20, this.tileDimensions * 20, 'Round ' + this.roundCounter, { fontSize: '32px', fill: '#000' });
 
     // add input and keybindings
     this.cursors = game.input.keyboard.createCursorKeys();
@@ -318,6 +319,10 @@ TowerDefense.WorldState.prototype.createControlPanel = function() {
     var rocketTower = this.controlPanel.create(this.tileDimensions -2, this.tileDimensions*20, 'rocket-tower');
     var freezeTower = this.controlPanel.create(this.tileDimensions*2 -2, this.tileDimensions*20, 'freeze-tower');
     var teslaTower = this.controlPanel.create(this.tileDimensions*3 -2, this.tileDimensions*20, 'tesla-tower');
+    var roundStart = this.controlPanel.create(this.tileDimensions*4 -2, this.tileDimensions*20, 'play');
+    var wall = this.controlPanel.create(this.tileDimensions*0 -2, this.tileDimensions*21, 'wall');
+    var life = this.controlPanel.create(this.tileDimensions*14 -2, this.tileDimensions*20, 'life');
+    var coin = this.controlPanel.create(this.tileDimensions*9 -2, this.tileDimensions*20, 'coin');
 }
 
 // TowerDefense.WorldState.prototype.pickTile = function(sprite, pointer) {
@@ -339,7 +344,7 @@ TowerDefense.WorldState.prototype.createTower = function(controlID, towerX, towe
 
     if(this.gold >= newTower.price) {
         this.gold -= newTower.price;
-        this.goldText.text = "Gold: " + this.gold;
+        this.goldText.text = "$" + this.gold;
         this.towers.add(newTower);
     }
 }
@@ -450,7 +455,7 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
         if(this.currentControl.x === 0 && this.currentControl.y === 21 && wallCheck) {
             if(this.gold >= 2) {
                 this.gold -= 2;
-                this.goldText.text = "Gold: " + this.gold;
+                this.goldText.text = "$ " + this.gold;
                 this.map.putTile(-2, tileX, tileY, this.layer2);
                 this.pathfinder.updateGrid(this.map.layers[1].data);
                 this.findPathTo(this.layer2.getTileX(this.startX), this.layer2.getTileY(this.startY), this.layer2.getTileX(this.endX), this.layer2.getTileY(this.endY));
@@ -530,7 +535,7 @@ TowerDefense.WorldState.prototype.update = function () {
     if(this.life <= 0) {
         this.combatPhase = false;
         this.buildPhase = false;
-        this.lifeText.text = "Game over, man, game over!";
+        this.lifeText.text = "Game Over!";
     }
 
     // console.log(this.tileIsInvalid);
