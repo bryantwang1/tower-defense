@@ -92,7 +92,7 @@ TowerDefense.Tower.prototype.update = function() {
 
 
 //BULLET TARGETING
-  if (this.game) {
+    this.withinRadius = [];
     var tower = this;
     this.parentState.monsters.forEachExists(function(monster) {
         var distance = tower.game.physics.arcade.distanceBetween(tower, monster);
@@ -100,21 +100,12 @@ TowerDefense.Tower.prototype.update = function() {
             if(tower.withinRadius.indexOf(monster) < 0) {
                 tower.withinRadius.push(monster);
             }
-            tower.rotation = tower.game.physics.arcade.angleBetween(tower, tower.withinRadius[0]);
-            tower.shootBullet();
+            if(tower.withinRadius.length > 0) {
+                tower.rotation = tower.game.physics.arcade.angleBetween(tower, tower.withinRadius[0]);
+                tower.shootBullet();
+            }
         }
     });
-    console.log(this.withinRadius.length);
-    if(this.withinRadius.length > 0) {
-      var distanceCurrent = this.game.physics.arcade.distanceBetween(this, this.withinRadius[0]);
-      if(distanceCurrent > this.targetRadius) {
-        this.withinRadius.shift();
-      }
-    }
-    // // This way works but without distance and probably won't scale.
-    // this.rotation = this.game.physics.arcade.angleBetween(this, this.runners.getClosestTo(this));
-    // this.shootBullet();
-  }
 };
 
 //BULLET EXPLOSION

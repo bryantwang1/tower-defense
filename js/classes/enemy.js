@@ -24,12 +24,13 @@ TowerDefense.Enemy = function (parentState, posX, posY, sprite) {
     Phaser.Sprite.call(this, game, posX, posY, sprite);
     this.outOfBoundsKill = true;
     this.collisionEnabled = false;
+    this.checkWorldBounds = true;
     this.game.physics.arcade.enable(this, true);
     this.anchor.setTo(0.5, 0.5);
     this.body.setSize(32, 32);
     this.maxHealth = 15;
 
-    this.moveSpeed = 120;
+    this.moveSpeed = 200;
     this.body.immovable = true;
 
     this.path = [];

@@ -19,30 +19,30 @@ TowerDefense.WorldState.prototype.init = function () {
     this.layer1;
     this.layer2;
     this.pathfinder;
-    this.sprite;
 
     this.marker;
     this.tileDimensions = 32;
     this.currentTile = 0;
     this.currentLayer;
+
+    this.currentControl = 0;
+
     this.counter = 0;
+    this.tickSpawnRate = 15; // standard spawn rate in ticks
 
     this.cursors;
     this.blocked = false;
     this.monsters;
     // to hold monsters members so we can check them
-    this.monsterArrays = [];
-    this.fliers;
-    this.car_path = [];
-    this.car_path_step = -1;
+    this.monsterPath = [];
     this.startX;
     this.startY;
-    this.carLastOrientation = 0;
     this.towers;
 
-    // load assets
-    // this.game.load.image('ground_1x1', '../assets/tilemaps/tiles/ground_1x1.png');
-    // this.game.load.image('car', '../assets/car90.png');
+    // round management properties
+    this.roundCounter = 0;
+    this.combatPhase = false;
+    this.buildPhase = true;
 
     // start physics system
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -65,7 +65,7 @@ TowerDefense.WorldState.prototype.init = function () {
 TowerDefense.WorldState.prototype.create = function () {
     "use strict";
     //  Creates a new blank layer and sets the map dimensions.
-    this.layer1 = this.map.create('level1', 25, 20, 32, 32);
+    this.layer1 = this.map.create('level1', 25, 23, 32, 32);
     for(var i = 0; i < 25;i++) {
       for(var j = 0; j < 20;j++) {
         this.map.putTile(0, i, j, this.layer1);
@@ -75,8 +75,8 @@ TowerDefense.WorldState.prototype.create = function () {
     //  Resize the world
     this.layer1.resizeWorld();
 
-    // Create collision/obstacle layer
-    this.layer2 = this.map.createBlankLayer('level2', 25, 20, 32, 32);
+    // Create collision/obstacle layer; extra long X to let enemies go off screen
+    this.layer2 = this.map.createBlankLayer('level2', 27, 23, 32, 32);
     // create maze
     for(var i = 0; i < 25;i++) {
       for(var j = 0; j < 20;j++) {
@@ -157,6 +157,7 @@ TowerDefense.WorldState.prototype.create = function () {
     this.map.putTile(4, 11, 7, this.layer2);
     this.map.putTile(4, 11, 7, this.layer2);
     this.map.putTile(4, 11, 6, this.layer2);
+    this.map.putTile(-1, 24, 18, this.layer2);
 
     this.currentLayer = this.layer2;
     this.map.setCollision(this.obstacleTile);
@@ -165,10 +166,11 @@ TowerDefense.WorldState.prototype.create = function () {
     this.startX = this.layer2.getTileX(48) * 32;
     this.startY = this.layer2.getTileY(48) * 32;
     // set ending points for path
-    this.endX = this.layer2.getTileX(48 + 704) * 32;
+    this.endX = this.layer2.getTileX(48 + 800) * 32;
     this.endY = this.layer2.getTileY(48 + 544) * 32;
 
     //  Create our tile selector at the top of the screen
+    this.createControlPanel();
     this.createTileSelector();
 
     this.game.input.addMoveCallback(this.updateMarker, this);
@@ -199,16 +201,13 @@ TowerDefense.WorldState.prototype.create = function () {
     // var _this = this;
     // this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
     // create groups
-    this.groups = {};
-    this.prefabs = {};
 
     //  make towers
     this.towers = this.game.add.group()
+
     for(var i=0; i < 2; i++) {
         var newTower = new TowerDefense.Tower(this, 100, 100 + i * 110, 'machine-tower', 110, 1000, 3, 600, 'bullet');
-        var rocketTower = new TowerDefense.RocketTower(this, 500, 100 + i * 110);
-        var freezeTower = new TowerDefense.FreezeTower(this, 100, 400 + i * 110);
-        var teslaTower = new TowerDefense.TeslaTower(this, 500, 450 + i * 110);
+
         this.towers.add(newTower);
         this.towers.add(rocketTower);
         this.towers.add(freezeTower);
@@ -245,12 +244,12 @@ TowerDefense.WorldState.prototype.createTileSelector = function() {
 
     var tileSelectorBackground = this.game.make.graphics();
     tileSelectorBackground.beginFill(0x000000, 0.5);
-    tileSelectorBackground.drawRect(0, 0, 800, 34);
+    tileSelectorBackground.drawRect(0, 640, 800, 34);
     tileSelectorBackground.endFill();
 
     tileSelector.add(tileSelectorBackground);
 
-    var tileStrip = tileSelector.create(1, 1, 'ground_1x1');
+    var tileStrip = tileSelector.create(1, 641, 'ground_1x1');
     tileStrip.inputEnabled = true;
     tileStrip.events.onInputDown.add(this.pickTile, this);
 
@@ -263,9 +262,50 @@ TowerDefense.WorldState.prototype.createTileSelector = function() {
 
 }
 
+TowerDefense.WorldState.prototype.createControlPanel = function() {
+    var controlPanel = this.game.add.group();
+
+    var controlPanelBackground = this.game.make.graphics();
+    controlPanelBackground.beginFill(0x999999, 1);
+    controlPanelBackground.drawRect(0, 672, 800, 64);
+    controlPanelBackground.endFill();
+
+    controlPanel.add(controlPanelBackground);
+
+    controlPanelBackground.inputEnabled = true;
+    controlPanelBackground.events.onInputDown.add(this.pickControl, this);
+
+
+    controlPanel.fixedToCamera = true;
+
+    var cannon = controlPanel.create(-2, 673, 'arrow');
+}
+
 TowerDefense.WorldState.prototype.pickTile = function(sprite, pointer) {
 
     this.currentTile = this.game.math.snapToFloor(pointer.x, 32) / 32;
+    console.log();
+}
+
+TowerDefense.WorldState.prototype.pickControl = function(sprite, pointer) {
+
+    this.currentControl = this.game.math.snapToFloor(pointer.x, 32) / 32;
+    //Possibly add Y
+    console.log(this.currentControl);
+    if(this.currentControl === 24) {
+        this.counter = 0;
+        this.monsters.removeAll(true, true);
+        this.roundCounter++;
+        console.log("round: " +  this.roundCounter);
+    } else if (this. currentControl === 2) {
+        // debugging control
+        var alivers = [];
+        this.monsters.forEachAlive(function(monster) { alivers.push(monster) });
+        console.log(alivers.length);
+        var alls = [];
+        this.monsters.forEach(function(monster) { alls.push(monster) });
+        console.log("alls: " + alls.length);
+    }
 }
 
 TowerDefense.WorldState.prototype.updateMarker = function() {
@@ -273,15 +313,26 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
     this.marker.x = this.currentLayer.getTileX(this.game.input.activePointer.worldX) * 32;
     this.marker.y = this.currentLayer.getTileY(this.game.input.activePointer.worldY) * 32;
 
-    if (this.game.input.mousePointer.isDown)
-    {
-        this.map.putTile(this.currentTile, this.currentLayer.getTileX(this.marker.x), this.currentLayer.getTileY(this.marker.y), this.currentLayer);
-        this.pathfinder.updateGrid(this.map.layers[1].data);
+    var xPlace = this.currentLayer.getTileX(this.marker.x);
+    var yPlace = this.currentLayer.getTileY(this.marker.y)
 
-        var xPlace = this.currentLayer.getTileX(this.marker.x);
-        var yPlace = this.currentLayer.getTileY(this.marker.y)
-
-        // map.fill(currentTile, currentLayer.getTileX(marker.x), currentLayer.getTileY(marker.y), 4, 4, currentLayer);
+    // if (this.game.input.mousePointer.isDown && this.buildPhase && !this.combatPhase)
+    // {
+    //     this.map.putTile(this.currentTile, this.currentLayer.getTileX(this.marker.x), this.currentLayer.getTileY(this.marker.y), this.currentLayer);
+    //     this.pathfinder.updateGrid(this.map.layers[1].data);
+    //
+    //     var xPlace = this.currentLayer.getTileX(this.marker.x);
+    //     var yPlace = this.currentLayer.getTileY(this.marker.y)
+    //
+    //     // map.fill(currentTile, currentLayer.getTileX(marker.x), currentLayer.getTileY(marker.y), 4, 4, currentLayer);
+    // }
+    if (this.game.input.mousePointer.isDown && this.buildPhase && !this.combatPhase && this.marker.y < 640) {
+        console.log(this.currentLayer);
+        if(this.currentControl === 0) {
+            console.log("input if");
+            var newTower = new TowerDefense.Tower(this, this.marker.x + this.tileDimensions/2, this.marker.y + this.tileDimensions/2, 'arrow', 110, 1000, 5, 600, 'star');
+            this.towers.add(newTower);
+        }
     }
 }
 
@@ -289,11 +340,10 @@ TowerDefense.WorldState.prototype.findPathTo = function(originx, originy, tilex,
     var _this = this;
     this.pathfinder.setCallbackFunction(function(path) {
         path = path || [];
-        for(var i = 0, ilen = path.length; i < ilen; i++) {
-            _this.map.putTile(10, path[i].x, path[i].y, _this.layer1);
-        }
-        _this.car_path = path;
-        // _this.monsters.setAll('path', _this.car_path);
+        // for(var i = 0, ilen = path.length; i < ilen; i++) {
+        //     _this.map.putTile(10, path[i].x, path[i].y, _this.layer1);
+        // }
+        _this.monsterPath = path;
         _this.blocked = false;
     });
 
@@ -302,28 +352,40 @@ TowerDefense.WorldState.prototype.findPathTo = function(originx, originy, tilex,
 }
 
 TowerDefense.WorldState.prototype.update = function () {
-    this.counter++;
-    // seems to run ~60 tickets per second
-    var _this = this;
-    var spawnIntervalCheck = this.counter % 15 === 0;
-    // this.game.time.events.loop(1000, function()
-    if(this.counter > 0 && this.counter < 200){
-        if(spawnIntervalCheck) {
-            var newEnemy = new TowerDefense.Enemy(_this, 48, 48, 'runnerBasic');
-            newEnemy.setPath(_this.car_path);
-            _this.monsters.add(newEnemy);
-            _this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
+
+    if(this.combatPhase && !this.buildPhase) {
+        this.counter++;
+        // seems to run ~60 tickets per second
+        var _this = this;
+        var spawnIntervalCheck = this.counter % this.tickSpawnRate === 0;
+
+        if(this.counter > 0 && this.counter < 200){
+            if(spawnIntervalCheck) {
+                var newEnemy = new TowerDefense.Enemy(_this, 48, 48, 'runnerBasic');
+                newEnemy.setPath(_this.monsterPath);
+                _this.monsters.add(newEnemy);
+                // _this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
+            }
         }
-    }
-  // );
-    if(this.counter > 300 && this.counter < 500){
-        if(spawnIntervalCheck) {
-            var newEnemy = new TowerDefense.Enemy(_this, 48, 48, 'runnerTank');
-            newEnemy.setPath(_this.car_path);
-            _this.monsters.add(newEnemy);
-            _this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
+        if(this.counter > 300 && this.counter < 500){
+            if(spawnIntervalCheck) {
+                var newEnemy = new TowerDefense.Enemy(_this, 48, 48, 'runnerTank');
+                newEnemy.setPath(_this.monsterPath);
+                _this.monsters.add(newEnemy);
+            }
         }
+    } else if (!this.combatPhase && this.buildPhase) {
+
     }
+    this.monsters.callAll('animations.play', 'animations', 'run');
+    if(this.currentControl === 24) {
+        this.combatPhase = true;
+        this.buildPhase = false;
+    }
+
+    // if(this.body.velocity.x !== 0 && this.body.velocity.y !== 0) {
+
+    // }
 }
 
 
