@@ -1,3 +1,4 @@
+var previousTile;
 //For require.js
 if (typeof define === "function" && define.amd) {
 	define("easystar", [], function() {
@@ -632,6 +633,34 @@ Phaser.Plugin.PathFinderPlugin.prototype.updateGrid = function (grid) {
 							this._grid[i][j] = grid[i][j].index;
 					else
 							this._grid[i][j] = 0
+			}
+	}
+
+	this._easyStar.setGrid(this._grid);
+}
+
+Phaser.Plugin.PathFinderPlugin.prototype.updateGridXY = function (grid, tileX, tileY, wallTile, replaceOld) {
+	var tempGrid = this._grid;
+	this._grid = [];
+	for (var i = 0; i < grid.length; i++)
+	{
+			this._grid[i] = [];
+			for (var j = 0; j < grid[i].length; j++)
+			{
+					if (grid[i][j]) {
+						if(i === tileX && j === tileY) {
+							if(replaceOld) {
+								this._grid[i][j] = previousTile;
+							} else {
+								previousTile = tempGrid[i][j];
+								this._grid[i][j] = wallTile;
+							}
+						} else {
+							this._grid[i][j] = grid[i][j].index;
+						}
+					} else {
+						this._grid[i][j] = 0;
+					}
 			}
 	}
 
