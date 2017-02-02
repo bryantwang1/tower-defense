@@ -2,6 +2,8 @@ var TowerDefense = TowerDefense || {};
 
 TowerDefense.Flyer = function (parentState, posX, posY, sprite) {
     TowerDefense.Enemy.call(this, game, posX, posY, sprite);
+
+    this.maxHealth = 25;
 }
 
 TowerDefense.Flyer.prototype = Object.create(TowerDefense.Enemy.prototype);
