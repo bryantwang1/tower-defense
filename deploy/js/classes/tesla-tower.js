@@ -3,7 +3,7 @@ var TowerDefense = TowerDefense || {};
 
 TowerDefense.TeslaTower = function (parentState, posX, posY) {
       // parentState, posX, posY, range, fireRate, dmg, bulletspeed, image
-      TowerDefense.Tower.call(parentState, posX, posY, 'tesla-tower', parentState.tileDimensions * 3, 800, 10, 200, 'diamond');
+      TowerDefense.Tower.call(this, parentState, posX, posY, 'tesla-tower', parentState.tileDimensions * 3, 800, 10, 200, 'diamond');
 
 }
 

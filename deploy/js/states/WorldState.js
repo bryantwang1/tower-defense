@@ -159,6 +159,7 @@ TowerDefense.WorldState.prototype.create = function () {
     this.map.putTile(1, 11, 7, this.layer2);
     this.map.putTile(1, 11, 6, this.layer2);
     this.map.putTile(-1, 39, 18, this.layer2);
+    this.map.putTile(-1, 0, 1, this.layer2);
 
     this.currentLayer = this.layer2;
     this.map.setCollision(this.obstacleTile);
@@ -209,9 +210,7 @@ TowerDefense.WorldState.prototype.create = function () {
     for(var i=0; i < 2; i++) {
         var newTower = new TowerDefense.Tower(this, this.tileDimensions * 4 - this.tileDimensions/2, this.tileDimensions * 4 + i * this.tileDimensions*2 - this.tileDimensions/2, 'machine-tower', this.tileDimensions * 4, 1000, 3, 600, 'bullet');
 
-        var rocketTower = new TowerDefense.RocketTower(this, 500, 100 + i * 110);
         this.towers.add(newTower);
-        this.towers.add(rocketTower);
     }
 
     // add input and keybindings
@@ -291,7 +290,6 @@ TowerDefense.WorldState.prototype.createControlPanel = function() {
 TowerDefense.WorldState.prototype.pickTile = function(sprite, pointer) {
 
     this.currentTile = this.game.math.snapToFloor(pointer.x, this.tileDimensions) / this.tileDimensions;
-    console.log();
 }
 
 TowerDefense.WorldState.prototype.pickControl = function(sprite, pointer) {
@@ -338,11 +336,9 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
     //     // map.fill(currentTile, currentLayer.getTileX(marker.x), currentLayer.getTileY(marker.y), 4, 4, currentLayer);
     // }
     if (this.game.input.mousePointer.isDown && this.buildPhase && !this.combatPhase && this.marker.y < this.tileDimensions * 20) {
-        console.log(this.currentLayer);
         var placeX = this.marker.x + this.tileDimensions/2;
         var placeY = this.marker.y + this.tileDimensions/2;
         if(this.currentControl.x === 0) {
-            console.log("input if");
             var newTower = new TowerDefense.Tower(this, placeX, placeY, 'machine-tower', this.tileDimensions * 4, 1000, 3, 600, 'bullet');
             this.towers.add(newTower);
         } else if(this.currentControl.x === 1) {
@@ -383,17 +379,17 @@ TowerDefense.WorldState.prototype.update = function () {
 
         if(this.counter > 0 && this.counter < 200){
             if(spawnIntervalCheck) {
-                var newEnemy = new TowerDefense.Enemy(_this, this.tileDimensions*1.5, this.tileDimensions*1.5, 'runnerBasic');
-                newEnemy.setPath(_this.monsterPath);
-                _this.monsters.add(newEnemy);
-                // _this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
+                var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerBasic');
+                newEnemy.setPath(this.monsterPath);
+                this.monsters.add(newEnemy);
+                // this.monsters.forEach(function(monster) { this.monsterArrays.push(monster) });
             }
         }
         if(this.counter > 300 && this.counter < 500){
             if(spawnIntervalCheck) {
-                var newEnemy = new TowerDefense.Enemy(_this, this.tileDimensions*1.5, this.tileDimensions*1.5, 'runnerTank');
-                newEnemy.setPath(_this.monsterPath);
-                _this.monsters.add(newEnemy);
+                var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerTank');
+                newEnemy.setPath(this.monsterPath);
+                this.monsters.add(newEnemy);
             }
         }
     } else if (!this.combatPhase && this.buildPhase) {
@@ -401,6 +397,18 @@ TowerDefense.WorldState.prototype.update = function () {
     }
     this.monsters.callAll('animations.play', 'animations', 'run');
 
+    if(this.combatPhase && !this.buildPhase) {
+        if(this.counter % 60 === 0) {
+            var monsterCounts = [];
+            this.monsters.forEachAlive(function(monster) {
+                monsterCounts.push(monster);
+            });
+            if(monsterCounts.length <= 0) {
+                this.combatPhase = false;
+                this.buildPhase = true;
+            }
+        }
+    }
 
     // if(this.body.velocity.x !== 0 && this.body.velocity.y !== 0) {
 
