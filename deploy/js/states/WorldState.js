@@ -364,6 +364,7 @@ TowerDefense.WorldState.prototype.pickControl = function(sprite, pointer) {
         this.combatPhase = true;
         this.buildPhase = false;
         console.log("round: " +  this.roundCounter);
+          this.roundCounterText.text ='Round ' + this.roundCounter;
     } else if (this.currentControl.x === 5) {
 
         // debugging control
