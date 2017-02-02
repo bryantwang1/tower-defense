@@ -115,7 +115,7 @@ TowerDefense.Tower.prototype.getExplosion = function(x, y) {
         explosion = this.game.add.sprite(0, 0, 'explosion');
         explosion.anchor.setTo(0.5, 0.5);
 
-        var animation = explosion.animations.add('boom', [0,1,2,3,4,5,6,7,8,9,10,11,12], 30, false);
+        var animation = explosion.animations.add('boom', [0,1,2,3,4,5,6,8,9,10,12,13,15,16,18], 30, false);
         animation.killOnComplete = true;
 
         this.explosionGroup.add(explosion);

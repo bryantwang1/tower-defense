@@ -204,9 +204,14 @@ TowerDefense.WorldState.prototype.create = function () {
 
     //  make towers
     this.towers = this.game.add.group()
-    for(var i=0; i < 5; i++) {
-        var newTower = new TowerDefense.Tower(this, 112, 112 + i * 96, 'arrow', 110, 1000, 5, 600, 'star');
+
+    for(var i=0; i < 2; i++) {
+        var newTower = new TowerDefense.Tower(this, 100, 100 + i * 110, 'machine-tower', 110, 1000, 3, 600, 'bullet');
+
         this.towers.add(newTower);
+        this.towers.add(rocketTower);
+        this.towers.add(freezeTower);
+        this.towers.add(teslaTower);
     }
 
     // add input and keybindings
@@ -347,6 +352,7 @@ TowerDefense.WorldState.prototype.findPathTo = function(originx, originy, tilex,
 }
 
 TowerDefense.WorldState.prototype.update = function () {
+
     if(this.combatPhase && !this.buildPhase) {
         this.counter++;
         // seems to run ~60 tickets per second
@@ -355,17 +361,15 @@ TowerDefense.WorldState.prototype.update = function () {
 
         if(this.counter > 0 && this.counter < 200){
             if(spawnIntervalCheck) {
-                var newEnemy = new TowerDefense.Enemy(_this, 48, 48, 'runner');
+                var newEnemy = new TowerDefense.Enemy(_this, 48, 48, 'runnerBasic');
                 newEnemy.setPath(_this.monsterPath);
-                newEnemy.animations.add('run', [0, 1, 2, 3, 4], 10 ,true);
                 _this.monsters.add(newEnemy);
                 // _this.monsters.forEach(function(monster) { _this.monsterArrays.push(monster) });
             }
         }
         if(this.counter > 300 && this.counter < 500){
             if(spawnIntervalCheck) {
-                var newEnemy = new TowerDefense.Enemy(_this, 48, 48, 'runner');
-                newEnemy.animations.add('run', [0, 1, 2, 3, 4], 10 ,true);
+                var newEnemy = new TowerDefense.Enemy(_this, 48, 48, 'runnerTank');
                 newEnemy.setPath(_this.monsterPath);
                 _this.monsters.add(newEnemy);
             }
