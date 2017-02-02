@@ -19,6 +19,9 @@ TowerDefense.WorldState.prototype.init = function () {
     this.layer1;
     this.layer2;
     this.pathfinder;
+    this.lifeText;
+    this.life = 20;
+    this.placedWalls = [];
 
     this.marker;
     this.tileDimensions = 48;
@@ -213,11 +216,15 @@ TowerDefense.WorldState.prototype.create = function () {
         this.towers.add(newTower);
     }
 
+
+    this.lifeText = game.add.text(16, 16, 'Life: 20', { fontSize: '32px', fill: '#000' });
+
     // add input and keybindings
     this.cursors = game.input.keyboard.createCursorKeys();
 
     this.moveCarXY = game.input.keyboard.addKey(Phaser.Keyboard.T);
     this.moveCarXY.onDown.add(this.keyPress, this);
+
 };
 
 TowerDefense.WorldState.prototype.keyPress = function(key) {
@@ -287,10 +294,10 @@ TowerDefense.WorldState.prototype.createControlPanel = function() {
     var rocketTower = controlPanel.create(this.tileDimensions*3 -2, this.tileDimensions*20, 'tesla-tower');
 }
 
-TowerDefense.WorldState.prototype.pickTile = function(sprite, pointer) {
-
-    this.currentTile = this.game.math.snapToFloor(pointer.x, this.tileDimensions) / this.tileDimensions;
-}
+// TowerDefense.WorldState.prototype.pickTile = function(sprite, pointer) {
+//
+//     this.currentTile = this.game.math.snapToFloor(pointer.x, this.tileDimensions) / this.tileDimensions;
+// }
 
 TowerDefense.WorldState.prototype.pickControl = function(sprite, pointer) {
 
@@ -303,17 +310,19 @@ TowerDefense.WorldState.prototype.pickControl = function(sprite, pointer) {
         this.counter = 0;
         this.monsters.removeAll(true, true);
         this.roundCounter++;
+        this.findPathTo(this.layer2.getTileX(this.startX), this.layer2.getTileY(this.startY), this.layer2.getTileX(this.endX), this.layer2.getTileY(this.endY));
         this.combatPhase = true;
         this.buildPhase = false;
         console.log("round: " +  this.roundCounter);
     } else if (this.currentControl.x === 5) {
+
         // debugging control
-        var alivers = [];
-        this.monsters.forEachAlive(function(monster) { alivers.push(monster) });
-        console.log(alivers.length);
-        var alls = [];
-        this.monsters.forEach(function(monster) { alls.push(monster) });
-        console.log("alls: " + alls.length);
+        // var alivers = [];
+        // this.monsters.forEachAlive(function(monster) { alivers.push(monster) });
+        // console.log(alivers.length);
+        // var alls = [];
+        // this.monsters.forEach(function(monster) { alls.push(monster) });
+        // console.log("alls: " + alls.length);
     }
 }
 
@@ -322,23 +331,14 @@ TowerDefense.WorldState.prototype.updateMarker = function() {
     this.marker.x = this.currentLayer.getTileX(this.game.input.activePointer.worldX) * this.tileDimensions;
     this.marker.y = this.currentLayer.getTileY(this.game.input.activePointer.worldY) * this.tileDimensions;
 
-    // var xPlace = this.currentLayer.getTileX(this.marker.x);
-    // var yPlace = this.currentLayer.getTileY(this.marker.y)
-
-    // if (this.game.input.mousePointer.isDown && this.buildPhase && !this.combatPhase)
-    // {
-    //     this.map.putTile(this.currentTile, this.currentLayer.getTileX(this.marker.x), this.currentLayer.getTileY(this.marker.y), this.currentLayer);
-    //     this.pathfinder.updateGrid(this.map.layers[1].data);
-    //
-    //     var xPlace = this.currentLayer.getTileX(this.marker.x);
-    //     var yPlace = this.currentLayer.getTileY(this.marker.y)
-    //
-    //     // map.fill(currentTile, currentLayer.getTileX(marker.x), currentLayer.getTileY(marker.y), 4, 4, currentLayer);
-    // }
     if (this.game.input.mousePointer.isDown && this.buildPhase && !this.combatPhase && this.marker.y < this.tileDimensions * 20) {
         var placeX = this.marker.x + this.tileDimensions/2;
         var placeY = this.marker.y + this.tileDimensions/2;
-        if(this.currentControl.x === 0) {
+
+        if(this.currentControl.x === 0 && this.currentControl.y === 21) {
+            this.map.putTile(1, this.currentLayer.getTileX(this.game.input.activePointer.worldX), this.currentLayer.getTileY(this.game.input.activePointer.worldY), this.layer2);
+            this.pathfinder.updateGrid(this.map.layers[1].data);
+        } else if(this.currentControl.x === 0) {
             var newTower = new TowerDefense.Tower(this, placeX, placeY, 'machine-tower', this.tileDimensions * 4, 1000, 3, 600, 'bullet');
             this.towers.add(newTower);
         } else if(this.currentControl.x === 1) {
@@ -382,7 +382,6 @@ TowerDefense.WorldState.prototype.update = function () {
                 var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerBasic');
                 newEnemy.setPath(this.monsterPath);
                 this.monsters.add(newEnemy);
-                // this.monsters.forEach(function(monster) { this.monsterArrays.push(monster) });
             }
         }
         if(this.counter > 300 && this.counter < 500){
@@ -392,154 +391,23 @@ TowerDefense.WorldState.prototype.update = function () {
                 this.monsters.add(newEnemy);
             }
         }
-    } else if (!this.combatPhase && this.buildPhase) {
-
-    }
-    this.monsters.callAll('animations.play', 'animations', 'run');
-
-    if(this.combatPhase && !this.buildPhase) {
-        if(this.counter % 60 === 0) {
-            var monsterCounts = [];
-            this.monsters.forEachAlive(function(monster) {
-                monsterCounts.push(monster);
-            });
-            if(monsterCounts.length <= 0) {
+        if(this.counter > 500) {
+            if(this.monsters.length <= 0) {
                 this.combatPhase = false;
                 this.buildPhase = true;
             }
         }
     }
-
+    if(this.life <= 0) {
+        this.combatPhase = false;
+        this.buildPhase = false;
+        this.lifeText.text = "Game over, man, game over!";
+    }
+    // else if (!this.combatPhase && this.buildPhase) {
+    //
+    // }
+    // this.monsters.callAll('animations.play', 'animations', 'run');
     // if(this.body.velocity.x !== 0 && this.body.velocity.y !== 0) {
 
     // }
 }
-
-
-
-// // ENEMY STUFF from -- http://blog.intracto.com/create-fun-and-interactive-games-with-javascript-using-phaser.io
-//
-// // this.monsters;
-// // function create() {
-// //     …
-// //
-// //     // Enemies
-// //     this.monsters = game.add.group();
-// //     game.time.events.loop(250, function(){
-// //         var enemy = new Enemy(game.world.randomX, game.world.randomY, 'enemy');
-// //         enemyGroup.add(enemy);
-// //     });
-// // }
-//
-// // function update() {
-// //     …
-// //
-// //     // Collision detection
-// //     game.physics.arcade.overlap(character, enemyGroup, collisionHandler, null, this);
-// // }
-// // this.sprite = game.add.sprite(50, 50, 'car'); // standard car sprite
-// TowerDefense.Enemy = function (parentState, posX, posY, sprite) {
-//     Phaser.Sprite.call(this, game, posX, posY, sprite);
-//     this.outOfBoundsKill = true;
-//     this.collisionEnabled = false;
-//     this.game.physics.arcade.enable(this, true);
-//     this.anchor.setTo(0.5, 0.5);
-//     this.body.setSize(16, 16);
-//
-//     this.type = sprite;
-//     this.path = [];
-//     this.pathStep = -1;
-//     this.counter = 0;
-//     this.lastRotation = 0;
-// }
-//
-// TowerDefense.Enemy.prototype = Object.create(Phaser.Sprite.prototype);
-// TowerDefense.Enemy.prototype.constructor = TowerDefense.Enemy;
-//
-// // TowerDefense.Enemy.prototype.create = function () {
-// //
-// // }
-//
-// TowerDefense.Enemy.prototype.update = function () {
-//   if(this.type === "star") {
-//     this.game.physics.arcade.moveToXY(this, 752, this.randomEndY, 100);
-//   } else {
-//     //car variables
-//     var next_position;
-//     this.counter++;
-//
-//     this.game.physics.arcade.collide(this, TowerDefense.layer2);
-//
-//     //car movement trigger
-//     if (this.path.length > 0) {
-//       if(this.pathStep < 0) {
-//         this.pathStep = 0;
-//       }
-//       next_position = this.path[this.pathStep];
-//
-//       if (!this.reachedXY(next_position)) {
-//         var moveX = (next_position.x * 32) + 16;
-//         var moveY = (next_position.y * 32) + 16;
-//         this.game.physics.arcade.moveToXY(this, moveX, moveY, 100);
-//       } else {
-//         this.body.velocity.x = 0;
-//         this.body.velocity.y = 0;
-//         this.x = (next_position.x * 32) + 16;
-//         this.y = (next_position.y * 32) + 16;
-//
-//         if (this.pathStep < this.path.length - 1) {
-//           this.pathStep += 1;
-//         } else {
-//           this.path = [];
-//           this.pathStep = -1;
-//         }
-//       }
-//     } else {
-//       this.body.velocity.x = 0;
-//       this.body.velocity.y = 0;
-//     }
-//
-//   }
-//
-//   if(this.counter % 3 === 0) {
-//     if(this.body.velocity.x === 0 && this.body.velocity.y === 0) {
-//       this.rotation = this.lastRotation;
-//     } else if(this.body.velocity.x > 20) {
-//       this.rotation = 0;
-//       this.lastRotation = 0;
-//     } else if(this.body.velocity.y > 20) {
-//       this.rotation = 1.57;
-//       this.lastRotation = 1.57;
-//     } else if(this.body.velocity.x < -20) {
-//       this.rotation = 3.14;
-//       this.lastRotation = 3.14;
-//     } else if(this.body.velocity.y < -20) {
-//       this.rotation = 4.71;
-//       this.lastRotation = 4.71;
-//     } else {
-//       this.rotation = 0;
-//     }
-//   }
-// }
-//
-// TowerDefense.Enemy.prototype.moveAlongXY = function() {
-//     "use strict";
-//     if (this.path !== null) {
-//         this.pathStep = 1;
-//     } else {
-//         this.path = [];
-//     }
-// };
-//
-// TowerDefense.Enemy.prototype.reachedXY = function(position){
-//     "use strict";
-//     if (this.game.physics.arcade.distanceToXY(this, (position.x * 32)+16, (position.y * 32)+16) <= 3) {
-//         return true;
-//     } else {
-//         return false;
-//     }
-// };
-//
-// TowerDefense.Enemy.prototype.setPath = function(path) {
-//   this.path = path;
-// }

@@ -22,9 +22,9 @@ var TowerDefense = TowerDefense || {};
 // this.sprite = game.add.sprite(50, 50, 'car'); // standard car sprite
 TowerDefense.Enemy = function (parentState, posX, posY, sprite) {
     Phaser.Sprite.call(this, game, posX, posY, sprite);
-    this.outOfBoundsKill = true;
+    // this.outOfBoundsKill = true;
+    // this.checkWorldBounds = true;
     this.collisionEnabled = false;
-    this.checkWorldBounds = true;
     this.game.physics.arcade.enable(this, true);
     this.anchor.setTo(0.5, 0.5);
     this.body.setSize(48, 48);
@@ -48,9 +48,6 @@ TowerDefense.Enemy.prototype.constructor = TowerDefense.Enemy;
 // }
 
 TowerDefense.Enemy.prototype.update = function () {
-  if(this.type === "star") {
-    this.game.physics.arcade.moveToXY(this, 752, this.randomEndY, this.moveSpeed);
-  } else {
     //car variables
     var next_position;
     this.counter++;
@@ -86,9 +83,8 @@ TowerDefense.Enemy.prototype.update = function () {
       this.body.velocity.y = 0;
     }
 
-  }
 
-  if(this.counter % 3 === 0) {
+  if(this.counter % 5 === 0) {
     if(this.body.velocity.x === 0 && this.body.velocity.y === 0) {
       this.rotation = this.lastRotation;
     } else if(this.body.velocity.x > 20) {
@@ -106,7 +102,17 @@ TowerDefense.Enemy.prototype.update = function () {
     } else {
       this.rotation = 0;
     }
+
+    if(this.path.length-1 === this.pathStep) {
+        // this.kill();
+        this.destroy();
+        this.parentState.life--;
+        if(this.parentState.life > 0) {
+            this.parentState.lifeText.text = "Life: " + this.parentState.life;
+        }
+    }
   }
+
 }
 
 TowerDefense.Enemy.prototype.moveAlongXY = function() {

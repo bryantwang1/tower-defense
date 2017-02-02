@@ -86,7 +86,8 @@ TowerDefense.Tower.prototype.update = function() {
           if(index >= 0) {
             this.withinRadius.splice(index, 1);
           }
-          monster.kill();
+        //   monster.kill();
+          monster.destroy();
         }
   }, null, this);
 
