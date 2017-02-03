@@ -3,7 +3,7 @@ var TowerDefense = TowerDefense || {};
 
 TowerDefense.FreezeTower = function (parentState, posX, posY) {
       // parentState, posX, posY, range, fireRate, dmg, bulletspeed, image
-      TowerDefense.Tower.call(this, parentState, posX, posY, 'freeze-tower', parentState.tileDimensions * 4, 900, 0, 300, 'freeze');
+      TowerDefense.Tower.call(this, parentState, posX, posY, 'freeze-tower', parentState.tileDimensions * 3.5, 950, 0, 250, 'freeze');
 
       this.price = 25;
       this.freezeAmount = 0.4;
