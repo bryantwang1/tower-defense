@@ -573,6 +573,17 @@ TowerDefense.WorldState.prototype.generateWaves2 = function () {
     var healthBonus = this.roundCounter * 5 + this.roundCounter;
 
     if(this.counter > 1 && this.counter < waveGap + waveLength){
+      if(tankSpawnInterval) {
+        var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerTank', 5, 100, 75 + healthBonus);
+        newEnemy.setPath(this.monsterPath);
+        this.monsters.add(newEnemy);
+
+        newEnemy.animations.add('run', [0,1,2], false);
+        newEnemy.animations.play('run', 7, true);
+      }
+    }
+
+    if(this.counter > waveGap + 200 && this.counter < waveGap + 200 + waveLength){
         if(spawnIntervalCheck) {
             var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerBasic_2', 1, 200, 25 + healthBonus);
 
@@ -581,19 +592,9 @@ TowerDefense.WorldState.prototype.generateWaves2 = function () {
 
             newEnemy.animations.add('run', [0,1,2,3,4], false);
             newEnemy.animations.play('run', 10, true);
-
         }
     }
-    if(this.counter > waveGap + 200 && this.counter < waveGap + 200 + waveLength){
-        if(tankSpawnInterval) {
-            var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerTank', 5, 100, 75 + healthBonus);
-            newEnemy.setPath(this.monsterPath);
-            this.monsters.add(newEnemy);
 
-            newEnemy.animations.add('run', [0,1,2], false);
-            newEnemy.animations.play('run', 7, true);
-        }
-    }
 
     // _this = this;
     if(this.counter > waveGap + 100 && this.counter < waveGap + 100 + waveLength && this.roundCounter > 5) {
@@ -608,6 +609,32 @@ TowerDefense.WorldState.prototype.generateWaves2 = function () {
             newFlyer.animations.play('run', 10, true);
         }
     };
+
+    if(this.roundCounter % 5 === 0 && this.roundCounter > 5) {
+      if(this.counter > 1 && this.counter < waveGap + waveLength){
+        if(spawnIntervalCheck) {
+          var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerTank', 5, 100, 75 + healthBonus*10);
+          newEnemy.setPath(this.monsterPath);
+          this.monsters.add(newEnemy);
+
+          newEnemy.animations.add('run', [0,1,2], false);
+          newEnemy.animations.play('run', 7, true);
+        }
+      }
+
+      if(this.counter > waveGap + 200 && this.counter < waveGap + 200 + waveLength){
+        if(spawnIntervalCheck) {
+          var newEnemy = new TowerDefense.Enemy(this, 0, this.tileDimensions*1.5, 'runnerBasic_2', 1, 200, 25 + healthBonus*10);
+
+          newEnemy.setPath(this.monsterPath);
+          this.monsters.add(newEnemy);
+
+          newEnemy.animations.add('run', [0,1,2,3,4], false);
+          newEnemy.animations.play('run', 10, true);
+
+        }
+      }
+    }
 }
 
 TowerDefense.WorldState.prototype.update = function () {
